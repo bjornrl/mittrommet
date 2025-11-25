@@ -1,33 +1,64 @@
+import { MaskEffect } from "@/components/MaskEffect";
+
 const LandingPage = () => {
   return (
     <main
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        width: "100%",
-        backgroundColor: "#ef4444",
         margin: 0,
         padding: 0,
         boxSizing: "border-box",
         position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
       }}
     >
-      <h1
-        style={{
-          fontSize: "6rem",
-          fontWeight: 700,
-          margin: 0,
-          padding: 0,
-          color: "#ffffff",
-          textAlign: "center",
-        }}
+      <MaskEffect
+        revealText={
+          <div
+            style={{
+              textAlign: "center",
+              color: "#ffffff",
+            }}
+          >
+            <h1
+              style={{
+                fontSize: "6rem",
+                fontWeight: 700,
+                margin: 0,
+                padding: 0,
+                color: "#ffffff",
+                textAlign: "center",
+              }}
+            >
+              MITTROMMET
+            </h1>
+          </div>
+        }
       >
-        MITTROMMET
-      </h1>
-      <p>Nye Rogaland teater og Stavanger Museum</p>
+        <h2
+          style={{
+            fontSize: "3rem",
+            fontWeight: 600,
+            margin: 0,
+            padding: 0,
+            color: "#ffffff",
+            textAlign: "center",
+          }}
+        >
+          Nye Rogaland teater og Stavanger Museum
+        </h2>
+        <p
+          style={{
+            fontSize: "1.5rem",
+            marginTop: "1rem",
+            color: "#ffffff",
+            textAlign: "center",
+          }}
+        >
+          Velkommen til Mittrommet
+        </p>
+      </MaskEffect>
     </main>
   );
 };
