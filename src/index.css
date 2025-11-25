@@ -107,6 +107,16 @@ body {
   border-right: none;
 }
 
+.nav-link button {
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  margin: 0;
+}
+
 .nav-link-active {
   background-color: #ffffff;
   opacity: 0.9;

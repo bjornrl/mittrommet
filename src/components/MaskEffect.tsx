@@ -8,6 +8,8 @@ interface MaskEffectProps {
 
 export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [maskId] = useState(() => `mask-${Math.random().toString(36).substr(2, 9)}`);
   const containerRef = useRef<HTMLDivElement>(null);
   const maskedLayerRef = useRef<HTMLDivElement>(null);
@@ -24,6 +26,19 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   const springY = useSpring(mouseY, { stiffness: 1000, damping: 30 });
   const springSize = useSpring(maskSize, { stiffness: 500, damping: 50 });
 
+  // Detect mobile/touch device
+  useEffect(() => {
+    const checkMobile = () => {
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth <= 768;
+      setIsMobile(isTouchDevice || isSmallScreen);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const updateMousePosition = (e: MouseEvent) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
@@ -32,10 +47,19 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
     }
   };
 
+  const updateTouchPosition = (e: TouchEvent) => {
+    if (containerRef.current && e.touches.length > 0) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const touch = e.touches[0];
+      mouseX.set(touch.clientX - rect.left);
+      mouseY.set(touch.clientY - rect.top);
+    }
+  };
+
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
-      // Initialize mouse position to center after a small delay to ensure container is rendered
+      // Initialize position to center after a small delay to ensure container is rendered
       const initPosition = () => {
         const rect = container.getBoundingClientRect();
         mouseX.set(rect.width / 2);
@@ -45,16 +69,30 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       // Use requestAnimationFrame to ensure DOM is ready
       requestAnimationFrame(initPosition);
       
-      container.addEventListener("mousemove", updateMousePosition);
-      return () => {
-        container.removeEventListener("mousemove", updateMousePosition);
-      };
+      if (isMobile) {
+        // Mobile: use touch events
+        container.addEventListener("touchmove", updateTouchPosition);
+        return () => {
+          container.removeEventListener("touchmove", updateTouchPosition);
+        };
+      } else {
+        // Desktop: use mouse events
+        container.addEventListener("mousemove", updateMousePosition);
+        return () => {
+          container.removeEventListener("mousemove", updateMousePosition);
+        };
+      }
     }
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
 
   useEffect(() => {
-    maskSize.set(isHovered ? 600 : 60);
-  }, [isHovered, maskSize]);
+    // On mobile, expand mask when touched, otherwise use hover state
+    if (isMobile) {
+      maskSize.set(isTouched ? 600 : 60);
+    } else {
+      maskSize.set(isHovered ? 600 : 60);
+    }
+  }, [isHovered, isTouched, isMobile, maskSize]);
 
   // Update SVG circle in mask and viewBox, and visible circle
   useEffect(() => {
@@ -150,7 +188,7 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         {revealText}
       </div>
 
-      {/* Visible circle that follows mouse - only visible when not hovering */}
+      {/* Visible circle that follows mouse/touch - only visible when not hovering/touching */}
       <div
         ref={visibleCircleRef}
         style={{
@@ -161,7 +199,7 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
           zIndex: 1.5,
           transform: "translate(-50%, -50%)",
           transition: "width 0.3s ease, height 0.3s ease, opacity 0.3s ease",
-          opacity: isHovered ? 0 : 1,
+          opacity: (isMobile ? isTouched : isHovered) ? 0 : 1,
         }}
       />
 
@@ -181,10 +219,21 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         }}
       >
         <div
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseEnter={() => !isMobile && setIsHovered(true)}
+          onMouseLeave={() => !isMobile && setIsHovered(false)}
+          onTouchStart={() => {
+            if (isMobile) {
+              setIsTouched(true);
+            }
+          }}
+          onTouchEnd={() => {
+            if (isMobile) {
+              setIsTouched(false);
+            }
+          }}
           style={{
             display: "inline-block",
+            touchAction: "manipulation",
           }}
         >
           {children}
