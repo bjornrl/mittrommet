@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "motion/react";
+import { useMotionValue, useSpring } from "motion/react";
 
 interface MaskEffectProps {
   children: React.ReactNode;
@@ -10,7 +10,9 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [maskId] = useState(() => `mask-${Math.random().toString(36).substr(2, 9)}`);
+  const [maskId] = useState(
+    () => `mask-${Math.random().toString(36).substr(2, 9)}`
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const maskedLayerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -29,11 +31,12 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   // Detect mobile/touch device
   useEffect(() => {
     const checkMobile = () => {
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
       const isSmallScreen = window.innerWidth <= 768;
       setIsMobile(isTouchDevice || isSmallScreen);
     };
-    
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -65,10 +68,10 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         mouseX.set(rect.width / 2);
         mouseY.set(rect.height / 2);
       };
-      
+
       // Use requestAnimationFrame to ensure DOM is ready
       requestAnimationFrame(initPosition);
-      
+
       if (isMobile) {
         // Mobile: use touch events
         container.addEventListener("touchmove", updateTouchPosition);
@@ -102,17 +105,20 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         const x = springX.get();
         const y = springY.get();
         const size = springSize.get();
-        
+
         // Update SVG viewBox to match container dimensions
-        svgRef.current.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
+        svgRef.current.setAttribute(
+          "viewBox",
+          `0 0 ${rect.width} ${rect.height}`
+        );
         svgRef.current.setAttribute("width", rect.width.toString());
         svgRef.current.setAttribute("height", rect.height.toString());
-        
+
         // Update mask circle position and size
         circleRef.current.setAttribute("cx", x.toString());
         circleRef.current.setAttribute("cy", y.toString());
         circleRef.current.setAttribute("r", (size / 2).toString());
-        
+
         // Update visible circle position and size
         if (visibleCircleRef.current) {
           visibleCircleRef.current.style.left = `${x}px`;
@@ -156,20 +162,19 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       {/* SVG mask definition */}
       <svg
         ref={svgRef}
-        style={{ position: "absolute", pointerEvents: "none", width: 0, height: 0 }}
+        style={{
+          position: "absolute",
+          pointerEvents: "none",
+          width: 0,
+          height: 0,
+        }}
       >
         <defs>
           <mask id={maskId}>
             {/* Black background - hides the element (MITTROMMET) - shows background text */}
             <rect width="100%" height="100%" fill="black" />
             {/* White circle - shows the element (MITTROMMET) - reveals it */}
-            <circle
-              ref={circleRef}
-              fill="white"
-              cx="0"
-              cy="0"
-              r="30"
-            />
+            <circle ref={circleRef} fill="white" cx="0" cy="0" r="30" />
           </mask>
         </defs>
       </svg>
@@ -242,4 +247,3 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
     </div>
   );
 };
-
