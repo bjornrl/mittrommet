@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 type Phase = "Nåtid" | "Mellomtid" | "Nytid";
 type Season = "Vår" | "Sommer" | "Høst" | "Vinter";
@@ -82,8 +82,8 @@ function generateLorem(wordCount: number): string {
   return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ".";
 }
 
-// Generate concepts once at module load
-const concepts: Concept[] = Array.from({ length: 50 }, (_, i) => {
+// Generate initial concepts
+const initialConcepts: Concept[] = Array.from({ length: 50 }, (_, i) => {
   const id = i + 1;
   return {
     id,
@@ -99,6 +99,224 @@ const concepts: Concept[] = Array.from({ length: 50 }, (_, i) => {
     )} Potensialet for dette er stort. ${generateLorem(35)}`,
   };
 });
+
+/* ---------- MODAL COMPONENT ---------- */
+
+interface ConceptModalProps {
+  isOpen: boolean;
+  concept: Concept | null;
+  onClose: () => void;
+  onSave: (concept: Concept) => void;
+}
+
+const ConceptModal = ({
+  isOpen,
+  concept,
+  onClose,
+  onSave,
+}: ConceptModalProps) => {
+  const [title, setTitle] = useState("");
+  const [phase, setPhase] = useState<Phase>("Nåtid");
+  const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
+  const [selectedDays, setSelectedDays] = useState<DayType[]>([]);
+  const [selectedTimes, setSelectedTimes] = useState<TimeType[]>([]);
+  const [description, setDescription] = useState("");
+
+  // Initialize form when concept changes
+  useEffect(() => {
+    if (concept) {
+      setTitle(concept.title);
+      setPhase(concept.phase);
+      setSelectedSeasons(concept.seasonTags);
+      setSelectedDays(concept.dayTags);
+      setSelectedTimes(concept.timeTags);
+      setDescription(concept.description);
+    } else {
+      setTitle("");
+      setPhase("Nåtid");
+      setSelectedSeasons([]);
+      setSelectedDays([]);
+      setSelectedTimes([]);
+      setDescription("");
+    }
+  }, [concept, isOpen]);
+
+  const handleToggleSeason = (season: Season) => {
+    setSelectedSeasons((prev) =>
+      prev.includes(season)
+        ? prev.filter((s) => s !== season)
+        : [...prev, season]
+    );
+  };
+
+  const handleToggleDay = (day: DayType) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    );
+  };
+
+  const handleToggleTime = (time: TimeType) => {
+    setSelectedTimes((prev) =>
+      prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]
+    );
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !description.trim()) return;
+
+    const conceptData: Concept = {
+      id: concept?.id || Date.now(),
+      title: title.trim(),
+      phase,
+      seasonTags: selectedSeasons,
+      dayTags: selectedDays,
+      timeTags: selectedTimes,
+      description: description.trim(),
+    };
+
+    onSave(conceptData);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2 className="modal-title">
+            {concept ? "Rediger konsept" : "Nytt konsept"}
+          </h2>
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            aria-label="Lukk"
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="modal-field">
+            <label htmlFor="title" className="modal-label">
+              Tittel *
+            </label>
+            <input
+              id="title"
+              type="text"
+              className="modal-input"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="modal-field">
+            <label htmlFor="phase" className="modal-label">
+              Fase *
+            </label>
+            <select
+              id="phase"
+              className="modal-select"
+              value={phase}
+              onChange={(e) => setPhase(e.target.value as Phase)}
+              required
+            >
+              {phases.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="modal-field">
+            <label className="modal-label">Årstider</label>
+            <div className="modal-tags">
+              {seasons.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  className={`modal-tag ${
+                    selectedSeasons.includes(s) ? "active" : ""
+                  }`}
+                  onClick={() => handleToggleSeason(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="modal-field">
+            <label className="modal-label">Dager</label>
+            <div className="modal-tags">
+              {days.map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  className={`modal-tag ${
+                    selectedDays.includes(d) ? "active" : ""
+                  }`}
+                  onClick={() => handleToggleDay(d)}
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="modal-field">
+            <label className="modal-label">Tid</label>
+            <div className="modal-tags">
+              {times.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  className={`modal-tag ${
+                    selectedTimes.includes(t) ? "active" : ""
+                  }`}
+                  onClick={() => handleToggleTime(t)}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="modal-field">
+            <label htmlFor="description" className="modal-label">
+              Beskrivelse *
+            </label>
+            <textarea
+              id="description"
+              className="modal-textarea"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={6}
+              required
+            />
+          </div>
+
+          <div className="modal-actions">
+            <button
+              type="button"
+              className="modal-btn modal-btn-secondary"
+              onClick={onClose}
+            >
+              Avbryt
+            </button>
+            <button type="submit" className="modal-btn modal-btn-primary">
+              {concept ? "Lagre endringer" : "Opprett konsept"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 /* ---------- SMALL COMPONENTS ---------- */
 
@@ -122,9 +340,10 @@ const FilterTag = ({ label, active, onToggle }: FilterTagProps) => {
 
 interface ConceptCardProps {
   concept: Concept;
+  onEdit: (concept: Concept) => void;
 }
 
-const ConceptCard = ({ concept }: ConceptCardProps) => {
+const ConceptCard = ({ concept, onEdit }: ConceptCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const allTags = [
     concept.phase,
@@ -150,29 +369,55 @@ const ConceptCard = ({ concept }: ConceptCardProps) => {
         <div className={`description ${expanded ? "expanded" : ""}`}>
           {concept.description}
         </div>
-        <button
-          type="button"
-          className="expand-btn"
-          onClick={() => setExpanded((prev) => !prev)}
-        >
-          <span>{expanded ? "Lukk" : "Les mer"}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-            style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+        <div className="card-actions">
+          <button
+            type="button"
+            className="expand-btn"
+            onClick={() => setExpanded((prev) => !prev)}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
+            <span>{expanded ? "Lukk" : "Les mer"}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              style={{
+                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="edit-btn"
+            onClick={() => onEdit(concept)}
+            title="Rediger konsept"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </article>
   );
@@ -181,12 +426,15 @@ const ConceptCard = ({ concept }: ConceptCardProps) => {
 /* ---------- MAIN PAGE COMPONENT ---------- */
 
 const ProductPage = () => {
+  const [concepts, setConcepts] = useState<Concept[]>(initialConcepts);
   const [search, setSearch] = useState("");
   const [phase, setPhase] = useState<Phase | "alle">("alle");
   const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
   const [selectedDays, setSelectedDays] = useState<DayType[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<TimeType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingConcept, setEditingConcept] = useState<Concept | null>(null);
 
   const itemsPerPage = 12;
 
@@ -224,7 +472,7 @@ const ProductPage = () => {
 
       return true;
     });
-  }, [search, phase, selectedSeasons, selectedDays, selectedTimes]);
+  }, [concepts, search, phase, selectedSeasons, selectedDays, selectedTimes]);
 
   const totalPages = Math.ceil(filteredConcepts.length / itemsPerPage) || 1;
   const pageStart = (currentPage - 1) * itemsPerPage;
@@ -266,10 +514,49 @@ const ProductPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleAddConcept = () => {
+    setEditingConcept(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditConcept = (concept: Concept) => {
+    setEditingConcept(concept);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveConcept = (concept: Concept) => {
+    if (editingConcept) {
+      // Update existing concept
+      setConcepts((prev) =>
+        prev.map((c) => (c.id === concept.id ? concept : c))
+      );
+    } else {
+      // Add new concept
+      setConcepts((prev) => [...prev, concept]);
+    }
+    setIsModalOpen(false);
+    setEditingConcept(null);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingConcept(null);
+  };
+
   return (
     <main>
       {/* Filter bar */}
       <section className="filter-bar">
+        <div className="filter-group">
+          <button
+            type="button"
+            className="add-concept-btn"
+            onClick={handleAddConcept}
+          >
+            + Nytt konsept
+          </button>
+        </div>
+
         <div className="filter-group">
           <span className="filter-label">Fase</span>
           <select
@@ -348,7 +635,11 @@ const ProductPage = () => {
           </div>
         ) : (
           pageItems.map((concept) => (
-            <ConceptCard key={concept.id} concept={concept} />
+            <ConceptCard
+              key={concept.id}
+              concept={concept}
+              onEdit={handleEditConcept}
+            />
           ))
         )}
       </section>
@@ -371,6 +662,14 @@ const ProductPage = () => {
           );
         })}
       </nav>
+
+      {/* Modal */}
+      <ConceptModal
+        isOpen={isModalOpen}
+        concept={editingConcept}
+        onClose={handleCloseModal}
+        onSave={handleSaveConcept}
+      />
     </main>
   );
 };
