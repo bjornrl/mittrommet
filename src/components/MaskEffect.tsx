@@ -150,7 +150,7 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         {revealText}
       </div>
 
-      {/* Visible circle that follows mouse */}
+      {/* Visible circle that follows mouse - only visible when not hovering */}
       <div
         ref={visibleCircleRef}
         style={{
@@ -158,9 +158,10 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
           borderRadius: "50%",
           backgroundColor: "#000000",
           pointerEvents: "none",
-          zIndex: 3,
+          zIndex: 1.5,
           transform: "translate(-50%, -50%)",
-          transition: "width 0.3s ease, height 0.3s ease",
+          transition: "width 0.3s ease, height 0.3s ease, opacity 0.3s ease",
+          opacity: isHovered ? 0 : 1,
         }}
       />
 
