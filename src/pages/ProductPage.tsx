@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import MethodologyModal from "../components/MethodologyModal";
 
 type Phase = "Nåtid" | "Mellomtid" | "Nytid";
 type Season = "Vår" | "Sommer" | "Høst" | "Vinter";
@@ -434,6 +435,7 @@ const ProductPage = () => {
   const [selectedTimes, setSelectedTimes] = useState<TimeType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMethodologyModalOpen, setIsMethodologyModalOpen] = useState(false);
   const [editingConcept, setEditingConcept] = useState<Concept | null>(null);
 
   const itemsPerPage = 12;
@@ -626,8 +628,30 @@ const ProductPage = () => {
           </div>
         </div>
       </section>
+      <MethodologyModal
+        isOpen={isMethodologyModalOpen}
+        onClose={() => setIsMethodologyModalOpen(false)}
+      />
+      <section
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "18px 18px",
+        }}
+      >
+        <button
+          type="button"
+          className="add-concept-btn"
+          onClick={() => setIsMethodologyModalOpen(true)}
+        >
+          Metode for testing
+        </button>
+      </section>
 
       {/* Grid */}
+
       <section className="archive-container">
         {pageItems.length === 0 ? (
           <div className="no-results">
