@@ -9,8 +9,10 @@ function App() {
   const location = useLocation();
   const isProductPage = location.pathname === "/product";
   const isAboutPage = location.pathname === "/about";
-  const [isResourcesDropdownOpen, setIsResourcesDropdownOpen] = useState(false);
-  const resourcesButtonRef = useRef<HTMLButtonElement>(null);
+  const [isFirstDropdownOpen, setIsFirstDropdownOpen] = useState(false);
+  const [isSecondDropdownOpen, setIsSecondDropdownOpen] = useState(false);
+  const firstButtonRef = useRef<HTMLButtonElement>(null);
+  const secondButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div>
@@ -44,9 +46,20 @@ function App() {
           >
             Om
           </NavLink>
+          <NavLink
+            to="/product"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "nav-link-active" : ""}`
+            }
+          >
+            Tjenestekonsepter
+          </NavLink>
           <button
-            ref={resourcesButtonRef}
-            onClick={() => setIsResourcesDropdownOpen(!isResourcesDropdownOpen)}
+            ref={firstButtonRef}
+            onClick={() => {
+              setIsFirstDropdownOpen(!isFirstDropdownOpen);
+              setIsSecondDropdownOpen(false);
+            }}
             className="nav-link"
             style={{
               border: "none",
@@ -60,12 +73,14 @@ function App() {
           </button>
 
           <button
-            ref={resourcesButtonRef}
-            onClick={() => setIsResourcesDropdownOpen(!isResourcesDropdownOpen)}
+            ref={secondButtonRef}
+            onClick={() => {
+              setIsSecondDropdownOpen(!isSecondDropdownOpen);
+              setIsFirstDropdownOpen(false);
+            }}
             className="nav-link"
             style={{
               border: "none",
-
               borderRight: "1px solid rgba(0, 0, 0, 0.1)",
               cursor: "pointer",
               fontFamily: "inherit",
@@ -74,21 +89,32 @@ function App() {
           >
             Det tredje rommet - joana presentasjon
           </button>
-          <NavLink
-            to="/product"
-            className={({ isActive }) =>
-              `nav-link ${isActive ? "nav-link-active" : ""}`
-            }
-          >
-            Tjenestekonsepter
-          </NavLink>
         </nav>
       </header>
 
       <ResourcesDropdown
-        isOpen={isResourcesDropdownOpen}
-        onClose={() => setIsResourcesDropdownOpen(false)}
-        buttonRef={resourcesButtonRef}
+        isOpen={isFirstDropdownOpen}
+        onClose={() => setIsFirstDropdownOpen(false)}
+        buttonRef={firstButtonRef}
+        resources={[
+          {
+            id: 1,
+            name: "Tronds presentasjon",
+            filename: "tronds-presentasjon.pdf",
+          },
+        ]}
+      />
+      <ResourcesDropdown
+        isOpen={isSecondDropdownOpen}
+        onClose={() => setIsSecondDropdownOpen(false)}
+        buttonRef={secondButtonRef}
+        resources={[
+          {
+            id: 2,
+            name: "Joana presentasjon",
+            filename: "joana-presentasjon.pdf",
+          },
+        ]}
       />
     </div>
   );

@@ -457,6 +457,7 @@ body {
 
 .about-section {
   margin-bottom: 48px;
+  margin-top: 96px;
 }
 
 .about-section:last-child {
@@ -464,7 +465,7 @@ body {
 }
 
 .about-title {
-  font-size: 32px;
+  font-size: 64px;
   font-weight: 700;
   color: var(--text-main);
   margin: 0 0 24px 0;
@@ -472,7 +473,7 @@ body {
 }
 
 .about-heading {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 16px 0;

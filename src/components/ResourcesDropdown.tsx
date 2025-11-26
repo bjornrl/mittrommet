@@ -1,19 +1,20 @@
 import { useEffect, useRef } from "react";
 
+interface Resource {
+  id: number;
+  name: string;
+  filename: string;
+}
+
 interface ResourcesDropdownProps {
   isOpen: boolean;
   onClose: () => void;
   buttonRef: React.RefObject<HTMLButtonElement | null>;
+  resources: Resource[];
 }
 
-export const ResourcesDropdown = ({ isOpen, onClose, buttonRef }: ResourcesDropdownProps) => {
+export const ResourcesDropdown = ({ isOpen, onClose, buttonRef, resources }: ResourcesDropdownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const pdfFiles = [
-    { id: 1, name: "Ressurs 1", filename: "ressurs-1.pdf" },
-    { id: 2, name: "Ressurs 2", filename: "ressurs-2.pdf" },
-    { id: 3, name: "Ressurs 3", filename: "ressurs-3.pdf" },
-  ];
 
   const handleDownload = (filename: string) => {
     // Placeholder: In the future, this will download the actual PDF
@@ -81,7 +82,7 @@ export const ResourcesDropdown = ({ isOpen, onClose, buttonRef }: ResourcesDropd
           gap: "0.5rem",
         }}
       >
-        {pdfFiles.map((pdf) => (
+        {resources.map((pdf) => (
           <div
             key={pdf.id}
             style={{
