@@ -218,7 +218,10 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
           alignItems: "center",
           justifyContent: "center",
           zIndex: 2,
-          backgroundColor: "#000000", // Black background to cover background text when revealed
+          backgroundImage: 'url("/Flyfoto.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           maskImage: `url(#${maskId})`,
           WebkitMaskImage: `url(#${maskId})`,
         }}

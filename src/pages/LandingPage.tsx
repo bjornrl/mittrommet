@@ -33,7 +33,10 @@ const LandingPage = () => {
             >
               MITTROMMET
             </h1>
-            <p>Somehting about mittrommet here, swtich om og produkter</p>
+            <p>
+              Sambruk, samhandling og samskaping av nytt bygg for Rogaland
+              Teater og Stavanger Museum.
+            </p>
           </div>
         }
       >
@@ -49,7 +52,7 @@ const LandingPage = () => {
         >
           Nye Rogaland teater og Stavanger Museum
         </h2>
-        <p
+        {/* <p
           style={{
             fontSize: "1.5rem",
             marginTop: "1rem",
@@ -58,7 +61,7 @@ const LandingPage = () => {
           }}
         >
           Velkommen til Mittrommet
-        </p>
+        </p> */}
       </MaskEffect>
     </main>
   );
