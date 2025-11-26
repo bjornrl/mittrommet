@@ -35,14 +35,7 @@ function App() {
           >
             Landing
           </NavLink>
-          <NavLink
-            to="/product"
-            className={({ isActive }) =>
-              `nav-link ${isActive ? "nav-link-active" : ""}`
-            }
-          >
-            Produkt
-          </NavLink>
+
           <NavLink
             to="/about"
             className={({ isActive }) =>
@@ -57,13 +50,38 @@ function App() {
             className="nav-link"
             style={{
               border: "none",
+              borderRight: "1px solid rgba(0, 0, 0, 0.1)",
               cursor: "pointer",
               fontFamily: "inherit",
               width: "100%",
             }}
           >
-            Last ned ressurser
+            Organisation - last ned tronds presentasjon
           </button>
+
+          <button
+            ref={resourcesButtonRef}
+            onClick={() => setIsResourcesDropdownOpen(!isResourcesDropdownOpen)}
+            className="nav-link"
+            style={{
+              border: "none",
+
+              borderRight: "1px solid rgba(0, 0, 0, 0.1)",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              width: "100%",
+            }}
+          >
+            Det tredje rommet - joana presentasjon
+          </button>
+          <NavLink
+            to="/product"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "nav-link-active" : ""}`
+            }
+          >
+            Tjenestekonsepter
+          </NavLink>
         </nav>
       </header>
 

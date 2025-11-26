@@ -33,6 +33,7 @@ const LandingPage = () => {
             >
               MITTROMMET
             </h1>
+            <p>Somehting about mittrommet here, swtich om og produkter</p>
           </div>
         }
       >

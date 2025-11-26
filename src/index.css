@@ -489,7 +489,7 @@ body {
 .about-text {
   font-size: 16px;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: var(--text-main);
   margin: 0 0 16px 0;
 }
 
