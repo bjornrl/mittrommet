@@ -69,7 +69,7 @@ function App() {
               width: "100%",
             }}
           >
-            Organisation - last ned tronds presentasjon
+            Organisasjon
           </button>
 
           <button
@@ -87,7 +87,7 @@ function App() {
               width: "100%",
             }}
           >
-            Det tredje rommet - joana presentasjon
+            Det tredje rommet
           </button>
         </nav>
       </header>
