@@ -1,105 +1,126 @@
 import { useMemo, useState, useEffect } from "react";
 import MethodologyModal from "../components/MethodologyModal";
+import Papa from "papaparse";
 
 type Phase = "Nåtid" | "Mellomtid" | "Nytid";
 type Season = "Vår" | "Sommer" | "Høst" | "Vinter";
 type DayType = "Ukedager" | "Helg";
 type TimeType = "Dag" | "Kveld/natt";
+type ConceptType = "Tjeneste" | "Fasilietet" | "Arrangement";
 
 interface Concept {
   id: number;
   title: string;
-  phase: Phase;
+  opphav: string;
+  målgruppe: string;
+  phase: Phase[];
   seasonTags: Season[];
   dayTags: DayType[];
   timeTags: TimeType[];
+  type: ConceptType[];
+  verdiForBrukerne: string;
+  verdiForOrganisasjonene: string;
+  hvaMåVærePåPlass: string;
+  hvorStarterVi: string;
   description: string;
 }
-
-/* ---------- DATA GENERATION (same idea as original) ---------- */
 
 const phases: Phase[] = ["Nåtid", "Mellomtid", "Nytid"];
 const seasons: Season[] = ["Vår", "Sommer", "Høst", "Vinter"];
 const days: DayType[] = ["Ukedager", "Helg"];
 const times: TimeType[] = ["Dag", "Kveld/natt"];
+const conceptTypes: ConceptType[] = ["Tjeneste", "Fasilietet", "Arrangement"];
 
-const fillerWords = [
-  "Teatersal",
-  "Museumsvandring",
-  "Kaffebar",
-  "Publikumsmøte",
-  "Utescene",
-  "Verksted",
-  "Impro",
-  "Billettsystem",
-  "Utstilling",
-  "Innsikt",
-  "Arkitektur",
-  "Samspill",
-  "Akustikk",
-  "Foajé",
-  "Backstage",
-  "Lyssetting",
-  "Lydbilde",
-  "Dramaturgi",
-  "Samling",
-  "Formidling",
-];
+// Initial concepts loaded from CSV template
+// This will be populated from the CSV file
+const initialConcepts: Concept[] = [];
 
-function getRandomSubset<T>(arr: T[], maxItems = 2): T[] {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  const count = Math.floor(Math.random() * maxItems) + 1;
-  return shuffled.slice(0, count);
-}
+/* ---------- CSV IMPORT UTILITY ---------- */
+// This function can be used to parse CSV data when importing directly into the code
+export function parseCSVToConcepts(csvText: string): Concept[] {
+  const results = Papa.parse(csvText, {
+    header: true,
+    skipEmptyLines: true,
+  });
 
-function generateLorem(wordCount: number): string {
-  let text = "";
-  const lorem = [
-    "lorem",
-    "ipsum",
-    "dolor",
-    "sit",
-    "amet",
-    "consectetur",
-    "adipiscing",
-    "elit",
-    "sed",
-    "do",
-    "eiusmod",
-    "tempor",
-    "incididunt",
-  ];
-  for (let i = 0; i < wordCount; i++) {
-    if (Math.random() < 0.1) {
-      text +=
-        fillerWords[
-          Math.floor(Math.random() * fillerWords.length)
-        ].toLowerCase() + " ";
-    } else {
-      text += lorem[Math.floor(Math.random() * lorem.length)] + " ";
+  const concepts: Concept[] = [];
+  let idCounter = 1;
+
+  results.data.forEach((row: any) => {
+    // Parse arrays from CSV (assuming comma-separated values in CSV)
+    const parseArray = (value: string): string[] => {
+      if (!value || value.trim() === "") return [];
+      return value
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    };
+
+    const parsePhases = (value: string): Phase[] => {
+      const parsed = parseArray(value);
+      const validPhases = parsed.filter((p) =>
+        phases.includes(p as Phase)
+      ) as Phase[];
+      // Ensure at least one phase, default to Nåtid if none valid
+      return validPhases.length > 0 ? validPhases : ["Nåtid"];
+    };
+
+    const parseTypes = (value: string): ConceptType[] => {
+      const parsed = parseArray(value);
+      const validTypes = parsed.filter((t) =>
+        conceptTypes.includes(t as ConceptType)
+      ) as ConceptType[];
+      // Ensure at least one type, default to Tjeneste if none valid
+      return validTypes.length > 0 ? validTypes : ["Tjeneste"];
+    };
+
+    const parseSeasons = (value: string): Season[] => {
+      const parsed = parseArray(value);
+      return parsed.filter((s) => seasons.includes(s as Season)) as Season[];
+    };
+
+    const parseDays = (value: string): DayType[] => {
+      const parsed = parseArray(value);
+      return parsed.filter((d) => days.includes(d as DayType)) as DayType[];
+    };
+
+    const parseTimes = (value: string): TimeType[] => {
+      const parsed = parseArray(value);
+      return parsed.filter((t) => times.includes(t as TimeType)) as TimeType[];
+    };
+
+    const concept: Concept = {
+      id: idCounter++,
+      title: row["Tittel"] || row["title"] || "",
+      opphav: row["Opphav"] || row["opphav"] || "",
+      målgruppe: row["Målgruppe"] || row["målgruppe"] || "",
+      phase: parsePhases(row["Fase"] || row["phase"] || ""),
+      seasonTags: parseSeasons(
+        row["Årstid"] || row["årstid"] || row["Seasons"] || ""
+      ),
+      dayTags: parseDays(row["Dager"] || row["dager"] || row["Days"] || ""),
+      timeTags: parseTimes(row["Tid"] || row["tid"] || row["Time"] || ""),
+      type: parseTypes(row["Type"] || row["type"] || ""),
+      verdiForBrukerne:
+        row["Verdi for brukerne"] || row["verdiForBrukerne"] || "",
+      verdiForOrganisasjonene:
+        row["Verdi for organisasjonene"] ||
+        row["verdiForOrganisasjonene"] ||
+        "",
+      hvaMåVærePåPlass:
+        row["Hva må være på plass"] || row["hvaMåVærePåPlass"] || "",
+      hvorStarterVi: row["Hvor starter vi"] || row["hvorStarterVi"] || "",
+      description:
+        row["Beskrivelse"] || row["beskrivelse"] || row["Description"] || "",
+    };
+
+    if (concept.title) {
+      concepts.push(concept);
     }
-  }
-  const sentence = text.trim();
-  return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ".";
-}
+  });
 
-// Generate initial concepts
-const initialConcepts: Concept[] = Array.from({ length: 50 }, (_, i) => {
-  const id = i + 1;
-  return {
-    id,
-    title: `${
-      fillerWords[Math.floor(Math.random() * fillerWords.length)]
-    } – Konsept ${id}`,
-    phase: phases[Math.floor(Math.random() * phases.length)],
-    seasonTags: getRandomSubset(seasons, 3),
-    dayTags: getRandomSubset(days, 2),
-    timeTags: getRandomSubset(times, 2),
-    description: `En kort beskrivelse av kjerneideen. ${generateLorem(
-      20
-    )} Potensialet for dette er stort. ${generateLorem(35)}`,
-  };
-});
+  return concepts;
+}
 
 /* ---------- MODAL COMPONENT ---------- */
 
@@ -117,30 +138,65 @@ const ConceptModal = ({
   onSave,
 }: ConceptModalProps) => {
   const [title, setTitle] = useState("");
-  const [phase, setPhase] = useState<Phase>("Nåtid");
+  const [opphav, setOpphav] = useState("");
+  const [målgruppe, setMålgruppe] = useState("");
+  const [selectedPhases, setSelectedPhases] = useState<Phase[]>(["Nåtid"]);
   const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
   const [selectedDays, setSelectedDays] = useState<DayType[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<TimeType[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<ConceptType[]>([
+    "Tjeneste",
+  ]);
+  const [verdiForBrukerne, setVerdiForBrukerne] = useState("");
+  const [verdiForOrganisasjonene, setVerdiForOrganisasjonene] = useState("");
+  const [hvaMåVærePåPlass, setHvaMåVærePåPlass] = useState("");
+  const [hvorStarterVi, setHvorStarterVi] = useState("");
   const [description, setDescription] = useState("");
 
   // Initialize form when concept changes
   useEffect(() => {
     if (concept) {
       setTitle(concept.title);
-      setPhase(concept.phase);
+      setOpphav(concept.opphav);
+      setMålgruppe(concept.målgruppe);
+      setSelectedPhases(concept.phase);
       setSelectedSeasons(concept.seasonTags);
       setSelectedDays(concept.dayTags);
       setSelectedTimes(concept.timeTags);
+      setSelectedTypes(concept.type);
+      setVerdiForBrukerne(concept.verdiForBrukerne);
+      setVerdiForOrganisasjonene(concept.verdiForOrganisasjonene);
+      setHvaMåVærePåPlass(concept.hvaMåVærePåPlass);
+      setHvorStarterVi(concept.hvorStarterVi);
       setDescription(concept.description);
     } else {
       setTitle("");
-      setPhase("Nåtid");
+      setOpphav("");
+      setMålgruppe("");
+      setSelectedPhases(["Nåtid"]);
       setSelectedSeasons([]);
       setSelectedDays([]);
       setSelectedTimes([]);
+      setSelectedTypes(["Tjeneste"]);
+      setVerdiForBrukerne("");
+      setVerdiForOrganisasjonene("");
+      setHvaMåVærePåPlass("");
+      setHvorStarterVi("");
       setDescription("");
     }
   }, [concept, isOpen]);
+
+  const handleTogglePhase = (phaseValue: Phase) => {
+    setSelectedPhases((prev) => {
+      // Ensure at least one phase is always selected
+      if (prev.length === 1 && prev.includes(phaseValue)) {
+        return prev; // Don't allow removing the last phase
+      }
+      return prev.includes(phaseValue)
+        ? prev.filter((p) => p !== phaseValue)
+        : [...prev, phaseValue];
+    });
+  };
 
   const handleToggleSeason = (season: Season) => {
     setSelectedSeasons((prev) =>
@@ -162,17 +218,42 @@ const ConceptModal = ({
     );
   };
 
+  const handleToggleType = (typeValue: ConceptType) => {
+    setSelectedTypes((prev) => {
+      // Ensure at least one type is always selected
+      if (prev.length === 1 && prev.includes(typeValue)) {
+        return prev; // Don't allow removing the last type
+      }
+      return prev.includes(typeValue)
+        ? prev.filter((t) => t !== typeValue)
+        : [...prev, typeValue];
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
+    if (
+      !title.trim() ||
+      !description.trim() ||
+      selectedTypes.length === 0 ||
+      selectedPhases.length === 0
+    )
+      return;
 
     const conceptData: Concept = {
       id: concept?.id || Date.now(),
       title: title.trim(),
-      phase,
+      opphav: opphav.trim(),
+      målgruppe: målgruppe.trim(),
+      phase: selectedPhases,
       seasonTags: selectedSeasons,
       dayTags: selectedDays,
       timeTags: selectedTimes,
+      type: selectedTypes,
+      verdiForBrukerne: verdiForBrukerne.trim(),
+      verdiForOrganisasjonene: verdiForOrganisasjonene.trim(),
+      hvaMåVærePåPlass: hvaMåVærePåPlass.trim(),
+      hvorStarterVi: hvorStarterVi.trim(),
       description: description.trim(),
     };
 
@@ -215,22 +296,81 @@ const ConceptModal = ({
           </div>
 
           <div className="modal-field">
-            <label htmlFor="phase" className="modal-label">
-              Fase *
+            <label htmlFor="opphav" className="modal-label">
+              Opphav
             </label>
-            <select
-              id="phase"
-              className="modal-select"
-              value={phase}
-              onChange={(e) => setPhase(e.target.value as Phase)}
-              required
-            >
-              {phases.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
+            <input
+              id="opphav"
+              type="text"
+              className="modal-input"
+              value={opphav}
+              onChange={(e) => setOpphav(e.target.value)}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label htmlFor="målgruppe" className="modal-label">
+              Målgruppe
+            </label>
+            <input
+              id="målgruppe"
+              type="text"
+              className="modal-input"
+              value={målgruppe}
+              onChange={(e) => setMålgruppe(e.target.value)}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label className="modal-label">Type *</label>
+            <div className="modal-tags">
+              {conceptTypes.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  className={`modal-tag ${
+                    selectedTypes.includes(t) ? "active" : ""
+                  }`}
+                  onClick={() => handleToggleType(t)}
+                  disabled={
+                    selectedTypes.length === 1 && selectedTypes.includes(t)
+                  }
+                >
+                  {t}
+                </button>
               ))}
-            </select>
+            </div>
+            {selectedTypes.length === 0 && (
+              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                Minst én type må velges
+              </p>
+            )}
+          </div>
+
+          <div className="modal-field">
+            <label className="modal-label">Fase *</label>
+            <div className="modal-tags">
+              {phases.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`modal-tag ${
+                    selectedPhases.includes(p) ? "active" : ""
+                  }`}
+                  onClick={() => handleTogglePhase(p)}
+                  disabled={
+                    selectedPhases.length === 1 && selectedPhases.includes(p)
+                  }
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+            {selectedPhases.length === 0 && (
+              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                Minst én fase må velges
+              </p>
+            )}
           </div>
 
           <div className="modal-field">
@@ -301,6 +441,58 @@ const ConceptModal = ({
             />
           </div>
 
+          <div className="modal-field">
+            <label htmlFor="verdiForBrukerne" className="modal-label">
+              Verdi for brukerne
+            </label>
+            <textarea
+              id="verdiForBrukerne"
+              className="modal-textarea"
+              value={verdiForBrukerne}
+              onChange={(e) => setVerdiForBrukerne(e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label htmlFor="verdiForOrganisasjonene" className="modal-label">
+              Verdi for organisasjonene
+            </label>
+            <textarea
+              id="verdiForOrganisasjonene"
+              className="modal-textarea"
+              value={verdiForOrganisasjonene}
+              onChange={(e) => setVerdiForOrganisasjonene(e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label htmlFor="hvaMåVærePåPlass" className="modal-label">
+              Hva må være på plass
+            </label>
+            <textarea
+              id="hvaMåVærePåPlass"
+              className="modal-textarea"
+              value={hvaMåVærePåPlass}
+              onChange={(e) => setHvaMåVærePåPlass(e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          <div className="modal-field">
+            <label htmlFor="hvorStarterVi" className="modal-label">
+              Hvor starter vi
+            </label>
+            <textarea
+              id="hvorStarterVi"
+              className="modal-textarea"
+              value={hvorStarterVi}
+              onChange={(e) => setHvorStarterVi(e.target.value)}
+              rows={3}
+            />
+          </div>
+
           <div className="modal-actions">
             <button
               type="button"
@@ -346,29 +538,159 @@ interface ConceptCardProps {
 
 const ConceptCard = ({ concept, onEdit }: ConceptCardProps) => {
   const [expanded, setExpanded] = useState(false);
-  const allTags = [
-    concept.phase,
-    ...concept.seasonTags,
-    ...concept.dayTags,
-    ...concept.timeTags,
-  ];
+
+  const getTypeColorClass = (type: ConceptType): string => {
+    switch (type) {
+      case "Tjeneste":
+        return "type-tag-blue";
+      case "Fasilietet":
+        return "type-tag-red";
+      case "Arrangement":
+        return "type-tag-yellow";
+      default:
+        return "type-tag-blue";
+    }
+  };
+
+  const getTagClass = (tag: string): string => {
+    // Check if it's a phase tag
+    if (phases.includes(tag as Phase)) {
+      return "mini-tag mini-tag-phase";
+    }
+    // Check if it's a season tag
+    if (seasons.includes(tag as Season)) {
+      return "mini-tag mini-tag-season";
+    }
+    // Check if it's a day tag
+    if (days.includes(tag as DayType)) {
+      return "mini-tag mini-tag-day";
+    }
+    // Check if it's a time tag
+    if (times.includes(tag as TimeType)) {
+      return "mini-tag mini-tag-time";
+    }
+    // Default fallback
+    return "mini-tag";
+  };
+
+  // Create tags with their types
+  const phaseTags = concept.phase;
+  const seasonTags = concept.seasonTags;
+  const dayTags = concept.dayTags;
+  const timeTags = concept.timeTags;
+
+  // Check if all tags in a category are selected
+  const allPhasesSelected = phaseTags.length === phases.length;
+  const allSeasonsSelected = seasonTags.length === seasons.length;
+  const allDaysSelected = dayTags.length === days.length;
+  const allTimesSelected = timeTags.length === times.length;
 
   return (
     <article className="concept-card">
-      <div className="card-image">Wireframe</div>
-      <div className="card-header">
-        <h3 className="card-title">{concept.title}</h3>
-        <div className="card-tags">
-          {allTags.map((t, idx) => (
-            <span key={idx} className="mini-tag">
-              {t}
+      <div className="card-image">
+        <div className="type-tags-container">
+          {concept.type.map((type, idx) => (
+            <span key={idx} className={`type-tag ${getTypeColorClass(type)}`}>
+              {type}
             </span>
           ))}
+        </div>
+        Wireframe
+      </div>
+      <div className="card-header">
+        <h3 className="card-title">{concept.title}</h3>
+        {concept.opphav && (
+          <div className="card-meta">
+            <span className="card-meta-label">Opphav:</span>
+            <span className="card-meta-value">{concept.opphav}</span>
+          </div>
+        )}
+        {concept.målgruppe && (
+          <div className="card-meta">
+            <span className="card-meta-label">Målgruppe:</span>
+            <span className="card-meta-value">{concept.målgruppe}</span>
+          </div>
+        )}
+        <div className="card-tags">
+          {allPhasesSelected ? (
+            <span className="mini-tag mini-tag-phase">Alle faser</span>
+          ) : (
+            phaseTags.map((tag, idx) => (
+              <span key={`phase-${idx}`} className={getTagClass(tag)}>
+                {tag}
+              </span>
+            ))
+          )}
+          {allSeasonsSelected ? (
+            <span className="mini-tag mini-tag-season">hele året</span>
+          ) : (
+            seasonTags.map((tag, idx) => (
+              <span key={`season-${idx}`} className={getTagClass(tag)}>
+                {tag}
+              </span>
+            ))
+          )}
+          {allDaysSelected ? (
+            <span className="mini-tag mini-tag-day">hele uken</span>
+          ) : (
+            dayTags.map((tag, idx) => (
+              <span key={`day-${idx}`} className={getTagClass(tag)}>
+                {tag}
+              </span>
+            ))
+          )}
+          {allTimesSelected ? (
+            <span className="mini-tag mini-tag-time">hele dagen</span>
+          ) : (
+            timeTags.map((tag, idx) => (
+              <span key={`time-${idx}`} className={getTagClass(tag)}>
+                {tag}
+              </span>
+            ))
+          )}
         </div>
       </div>
       <div className="card-body">
         <div className={`description ${expanded ? "expanded" : ""}`}>
           {concept.description}
+          {expanded && (
+            <div className="expanded-fields">
+              {concept.verdiForBrukerne && (
+                <div className="expanded-field">
+                  <h4 className="expanded-field-title">Verdi for brukerne</h4>
+                  <p className="expanded-field-content">
+                    {concept.verdiForBrukerne}
+                  </p>
+                </div>
+              )}
+              {concept.verdiForOrganisasjonene && (
+                <div className="expanded-field">
+                  <h4 className="expanded-field-title">
+                    Verdi for organisasjonene
+                  </h4>
+                  <p className="expanded-field-content">
+                    {concept.verdiForOrganisasjonene}
+                  </p>
+                </div>
+              )}
+              {concept.hvaMåVærePåPlass && (
+                <div className="expanded-field">
+                  <h4 className="expanded-field-title">Hva må være på plass</h4>
+                  <p className="expanded-field-content">
+                    {concept.hvaMåVærePåPlass}
+                  </p>
+                </div>
+              )}
+              {concept.hvorStarterVi && (
+                <div className="expanded-field">
+                  <h4 className="expanded-field-title">Hvor starter vi</h4>
+                  <p className="expanded-field-content">
+                    {concept.hvorStarterVi}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="card-actions">
           <button
@@ -440,16 +762,39 @@ const ProductPage = () => {
 
   const itemsPerPage = 12;
 
+  // Load concepts from CSV file on mount
+  useEffect(() => {
+    fetch("/konsepter_template.csv")
+      .then((response) => response.text())
+      .then((csvText) => {
+        const importedConcepts = parseCSVToConcepts(csvText);
+        if (importedConcepts.length > 0) {
+          setConcepts(importedConcepts);
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading CSV file:", error);
+      });
+  }, []);
+
   const filteredConcepts = useMemo(() => {
     const normalizedSearch = search.toLowerCase();
 
     return concepts.filter((item) => {
       const searchMatch =
         item.title.toLowerCase().includes(normalizedSearch) ||
-        item.description.toLowerCase().includes(normalizedSearch);
+        item.description.toLowerCase().includes(normalizedSearch) ||
+        item.opphav.toLowerCase().includes(normalizedSearch) ||
+        item.målgruppe.toLowerCase().includes(normalizedSearch) ||
+        item.verdiForBrukerne.toLowerCase().includes(normalizedSearch) ||
+        item.verdiForOrganisasjonene.toLowerCase().includes(normalizedSearch) ||
+        item.hvaMåVærePåPlass.toLowerCase().includes(normalizedSearch) ||
+        item.hvorStarterVi.toLowerCase().includes(normalizedSearch);
       if (!searchMatch) return false;
 
-      if (phase !== "alle" && item.phase !== phase) return false;
+      if (phase !== "alle" && !item.phase.some((p) => p === phase)) {
+        return false;
+      }
 
       if (
         selectedSeasons.length > 0 &&
@@ -516,11 +861,6 @@ const ProductPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleAddConcept = () => {
-    setEditingConcept(null);
-    setIsModalOpen(true);
-  };
-
   const handleEditConcept = (concept: Concept) => {
     setEditingConcept(concept);
     setIsModalOpen(true);
@@ -532,9 +872,6 @@ const ProductPage = () => {
       setConcepts((prev) =>
         prev.map((c) => (c.id === concept.id ? concept : c))
       );
-    } else {
-      // Add new concept
-      setConcepts((prev) => [...prev, concept]);
     }
     setIsModalOpen(false);
     setEditingConcept(null);
@@ -549,16 +886,6 @@ const ProductPage = () => {
     <main>
       {/* Filter bar */}
       <section className="filter-bar">
-        <div className="filter-group">
-          <button
-            type="button"
-            className="add-concept-btn"
-            onClick={handleAddConcept}
-          >
-            + Nytt konsept
-          </button>
-        </div>
-
         <div className="filter-group">
           <span className="filter-label">Fase</span>
           <select
