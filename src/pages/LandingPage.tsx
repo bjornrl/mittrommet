@@ -1,6 +1,6 @@
 import { MaskEffect } from "@/components/MaskEffect";
 
-const LandingPage = () => {
+export default function LandingPage() {
   return (
     <main
       style={{
@@ -9,7 +9,7 @@ const LandingPage = () => {
         boxSizing: "border-box",
         position: "relative",
         width: "100%",
-        height: "100vh",
+        // height: "100vh",
         overflow: "hidden",
       }}
     >
@@ -63,8 +63,10 @@ const LandingPage = () => {
           Velkommen til Mittrommet
         </p> */}
       </MaskEffect>
+      <div>
+        <p>aåweodiuabnf oinfasåof nszgnf s </p>
+        <p>aidjbawodnbaodb</p>
+      </div>
     </main>
   );
-};
-
-export default LandingPage;
+}

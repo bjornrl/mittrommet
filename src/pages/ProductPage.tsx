@@ -24,6 +24,7 @@ interface Concept {
   hvorStarterVi: string;
   description: string;
   imageUrl: string;
+  pdfUrl: string;
 }
 
 const phases: Phase[] = ["Nåtid", "Mellomtid", "Nytid"];
@@ -120,6 +121,35 @@ export function parseCSVToConcepts(csvText: string): Concept[] {
           return `/images/${url}`;
         }
         return url;
+      })(),
+      pdfUrl: (() => {
+        // Try multiple column name variations (including with spaces and different cases)
+        const url =
+          row["PDFURL"] ||
+          row["pdfURL"] ||
+          row["pdfUrl"] ||
+          row["PdfUrl"] ||
+          row["PDF"] ||
+          row[" pdfURL"] ||
+          row[" pdfUrl"] ||
+          "";
+        if (!url || url.trim() === "") return "";
+
+        // Remove /public prefix if present (files in public folder are served from root)
+        let cleanUrl = url.trim();
+        if (cleanUrl.startsWith("/public/")) {
+          cleanUrl = cleanUrl.replace("/public", "");
+        }
+
+        // If it's just a filename (no path or URL), prepend /pdfs/
+        if (
+          cleanUrl &&
+          !cleanUrl.startsWith("/") &&
+          !cleanUrl.startsWith("http")
+        ) {
+          return `/pdfs/${cleanUrl}`;
+        }
+        return cleanUrl;
       })(),
     };
 
@@ -265,6 +295,7 @@ const ConceptModal = ({
       hvorStarterVi: hvorStarterVi.trim(),
       description: description.trim(),
       imageUrl: "",
+      pdfUrl: "",
     };
 
     onSave(conceptData);
@@ -965,80 +996,29 @@ const ProductPage = () => {
 
     if (selectedConcepts.length === 0) return;
 
-    // Convert concepts to CSV format
-    const csvRows = [
-      [
-        "Tittel",
-        "Opphav",
-        "Målgruppe",
-        "Type",
-        "Fase",
-        "Årstid",
-        "Dager",
-        "Tid",
-        "Beskrivelse",
-        "Verdi for brukerne",
-        "Verdi for organisasjonene",
-        "Hva må være på plass",
-        "Hvor starter vi",
-        "ImageURL",
-      ],
-    ];
+    // Download each PDF individually
+    selectedConcepts.forEach((concept, index) => {
+      if (!concept.pdfUrl) {
+        console.warn(`No PDF URL found for concept: ${concept.title}`);
+        return;
+      }
 
-    selectedConcepts.forEach((concept) => {
-      csvRows.push([
-        concept.title,
-        concept.opphav,
-        concept.målgruppe,
-        concept.type.join(", "),
-        concept.phase.join(", "),
-        concept.seasonTags.join(", "),
-        concept.dayTags.join(", "),
-        concept.timeTags.join(", "),
-        concept.description,
-        concept.verdiForBrukerne,
-        concept.verdiForOrganisasjonene,
-        concept.hvaMåVærePåPlass,
-        concept.hvorStarterVi,
-        concept.imageUrl,
-      ]);
+      // Create a delay between downloads to avoid browser blocking
+      setTimeout(() => {
+        const link = document.createElement("a");
+        link.href = concept.pdfUrl;
+        link.download = `${concept.title.replace(/[^a-z0-9]/gi, "_")}.pdf`;
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, index * 200); // 200ms delay between each download
     });
 
-    // Convert to CSV string
-    const csvContent = csvRows
-      .map((row) =>
-        row
-          .map((cell) => {
-            // Escape cells that contain commas, quotes, or newlines
-            if (
-              cell.includes(",") ||
-              cell.includes('"') ||
-              cell.includes("\n")
-            ) {
-              return `"${cell.replace(/"/g, '""')}"`;
-            }
-            return cell;
-          })
-          .join(",")
-      )
-      .join("\n");
-
-    // Create blob and download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `valgte-konsepter-${new Date().toISOString().split("T")[0]}.csv`
-    );
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
     // Clear selection after download
-    setSelectedConceptIds(new Set());
+    setTimeout(() => {
+      setSelectedConceptIds(new Set());
+    }, selectedConcepts.length * 200 + 100);
   };
 
   return (
@@ -1156,6 +1136,8 @@ const ProductPage = () => {
             justifyContent: "center",
             alignItems: "center",
             padding: "12px",
+            backgroundColor: "#363254",
+            border: "none",
           }}
           onClick={() => setIsMethodologyModalOpen(true)}
         >
