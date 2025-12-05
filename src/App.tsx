@@ -9,10 +9,10 @@ function App() {
   const location = useLocation();
   const isProductPage = location.pathname === "/product";
   const isAboutPage = location.pathname === "/about";
-  const [isFirstDropdownOpen, setIsFirstDropdownOpen] = useState(false);
-  const [isSecondDropdownOpen, setIsSecondDropdownOpen] = useState(false);
-  const firstButtonRef = useRef<HTMLButtonElement>(null);
-  const secondButtonRef = useRef<HTMLButtonElement>(null);
+  const [isPdfsDropdownOpen, setIsPdfsDropdownOpen] = useState(false);
+  const [isPodcastsDropdownOpen, setIsPodcastsDropdownOpen] = useState(false);
+  const pdfsButtonRef = useRef<HTMLButtonElement>(null);
+  const podcastsButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div>
@@ -55,10 +55,10 @@ function App() {
             Tjenestekonsepter
           </NavLink>
           <button
-            ref={firstButtonRef}
+            ref={pdfsButtonRef}
             onClick={() => {
-              setIsFirstDropdownOpen(!isFirstDropdownOpen);
-              setIsSecondDropdownOpen(false);
+              setIsPdfsDropdownOpen(!isPdfsDropdownOpen);
+              setIsPodcastsDropdownOpen(false);
             }}
             className="nav-link"
             style={{
@@ -69,14 +69,14 @@ function App() {
               width: "100%",
             }}
           >
-            Organisasjon
+            Presentasjoner
           </button>
 
           <button
-            ref={secondButtonRef}
+            ref={podcastsButtonRef}
             onClick={() => {
-              setIsSecondDropdownOpen(!isSecondDropdownOpen);
-              setIsFirstDropdownOpen(false);
+              setIsPodcastsDropdownOpen(!isPodcastsDropdownOpen);
+              setIsPdfsDropdownOpen(false);
             }}
             className="nav-link"
             style={{
@@ -87,32 +87,46 @@ function App() {
               width: "100%",
             }}
           >
-            Det tredje rommet
+            Podcaster
           </button>
         </nav>
       </header>
 
       <ResourcesDropdown
-        isOpen={isFirstDropdownOpen}
-        onClose={() => setIsFirstDropdownOpen(false)}
-        buttonRef={firstButtonRef}
+        isOpen={isPdfsDropdownOpen}
+        onClose={() => setIsPdfsDropdownOpen(false)}
+        buttonRef={pdfsButtonRef}
         resources={[
           {
             id: 1,
             name: "Tronds presentasjon",
             filename: "tronds-presentasjon.pdf",
+            type: "pdf",
           },
-        ]}
-      />
-      <ResourcesDropdown
-        isOpen={isSecondDropdownOpen}
-        onClose={() => setIsSecondDropdownOpen(false)}
-        buttonRef={secondButtonRef}
-        resources={[
           {
             id: 2,
             name: "Joana presentasjon",
             filename: "joana-presentasjon.pdf",
+            type: "pdf",
+          },
+        ]}
+      />
+      <ResourcesDropdown
+        isOpen={isPodcastsDropdownOpen}
+        onClose={() => setIsPodcastsDropdownOpen(false)}
+        buttonRef={podcastsButtonRef}
+        resources={[
+          {
+            id: 3,
+            name: "Podcast 1",
+            filename: "podcast-1.mp3",
+            type: "podcast",
+          },
+          {
+            id: 4,
+            name: "Podcast 2",
+            filename: "podcast-2.mp3",
+            type: "podcast",
           },
         ]}
       />

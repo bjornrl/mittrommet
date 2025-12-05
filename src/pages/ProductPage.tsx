@@ -113,7 +113,14 @@ export function parseCSVToConcepts(csvText: string): Concept[] {
       hvorStarterVi: row["Hvor starter vi"] || row["hvorStarterVi"] || "",
       description:
         row["Beskrivelse"] || row["beskrivelse"] || row["Description"] || "",
-      imageUrl: row["ImageURL"] || row["imageUrl"] || row["ImageUrl"] || "",
+      imageUrl: (() => {
+        const url = row["ImageURL"] || row["imageUrl"] || row["ImageUrl"] || "";
+        // If it's just a filename (no path or URL), prepend /images/
+        if (url && !url.startsWith("/") && !url.startsWith("http")) {
+          return `/images/${url}`;
+        }
+        return url;
+      })(),
     };
 
     if (concept.title) {
@@ -536,9 +543,15 @@ const FilterTag = ({ label, active, onToggle }: FilterTagProps) => {
 
 interface ConceptCardProps {
   concept: Concept;
+  isSelected?: boolean;
+  onSelect?: (conceptId: number, selected: boolean) => void;
 }
 
-const ConceptCard = ({ concept }: ConceptCardProps) => {
+const ConceptCard = ({
+  concept,
+  isSelected = false,
+  onSelect,
+}: ConceptCardProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const getTypeColorClass = (type: ConceptType): string => {
@@ -588,7 +601,20 @@ const ConceptCard = ({ concept }: ConceptCardProps) => {
   const allTimesSelected = timeTags.length === times.length;
 
   return (
-    <article className="concept-card">
+    <article
+      className={`concept-card ${isSelected ? "concept-card-selected" : ""}`}
+    >
+      {onSelect && (
+        <div className="card-checkbox-container">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => onSelect(concept.id, e.target.checked)}
+            className="card-checkbox"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
       <div className="card-image">
         <div className="type-tags-container">
           {concept.type.map((type, idx) => (
@@ -598,27 +624,30 @@ const ConceptCard = ({ concept }: ConceptCardProps) => {
           ))}
         </div>
         {concept.imageUrl ? (
-          <img
-            src={concept.imageUrl}
-            alt={concept.title}
-            className="card-image-content"
-            onError={(e) => {
-              // Fallback to placeholder if image fails to load
-              const target = e.target as HTMLImageElement;
-              target.style.display = "none";
-              const placeholder = target.nextElementSibling as HTMLElement;
-              if (placeholder) {
-                placeholder.style.display = "flex";
-              }
-            }}
-          />
-        ) : null}
-        <div
-          className="card-image-placeholder"
-          style={{ display: concept.imageUrl ? "none" : "flex" }}
-        >
-          Wireframe
-        </div>
+          <>
+            <img
+              src={concept.imageUrl}
+              alt={concept.title}
+              className="card-image-content"
+              onError={(e) => {
+                // Fallback to placeholder if image fails to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+                const placeholder = target.parentElement?.querySelector(
+                  ".card-image-placeholder"
+                ) as HTMLElement;
+                if (placeholder) {
+                  placeholder.style.display = "flex";
+                }
+              }}
+            />
+            <div className="card-image-placeholder" style={{ display: "none" }}>
+              Wireframe
+            </div>
+          </>
+        ) : (
+          <div className="card-image-placeholder">Wireframe</div>
+        )}
       </div>
       <div className="card-header">
         <h3 className="card-title">{concept.title}</h3>
@@ -757,6 +786,9 @@ const ProductPage = () => {
   const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
   const [selectedDays, setSelectedDays] = useState<DayType[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<TimeType[]>([]);
+  const [selectedConceptIds, setSelectedConceptIds] = useState<Set<number>>(
+    new Set()
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMethodologyModalOpen, setIsMethodologyModalOpen] = useState(false);
@@ -906,88 +938,199 @@ const ProductPage = () => {
     setEditingConcept(null);
   };
 
+  const handleSelectConcept = (conceptId: number, selected: boolean) => {
+    setSelectedConceptIds((prev) => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(conceptId);
+      } else {
+        newSet.delete(conceptId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedConceptIds.size === pageItems.length) {
+      setSelectedConceptIds(new Set());
+    } else {
+      setSelectedConceptIds(new Set(pageItems.map((c) => c.id)));
+    }
+  };
+
+  const handleDownloadSelected = () => {
+    const selectedConcepts = concepts.filter((c) =>
+      selectedConceptIds.has(c.id)
+    );
+
+    if (selectedConcepts.length === 0) return;
+
+    // Convert concepts to CSV format
+    const csvRows = [
+      [
+        "Tittel",
+        "Opphav",
+        "Målgruppe",
+        "Type",
+        "Fase",
+        "Årstid",
+        "Dager",
+        "Tid",
+        "Beskrivelse",
+        "Verdi for brukerne",
+        "Verdi for organisasjonene",
+        "Hva må være på plass",
+        "Hvor starter vi",
+        "ImageURL",
+      ],
+    ];
+
+    selectedConcepts.forEach((concept) => {
+      csvRows.push([
+        concept.title,
+        concept.opphav,
+        concept.målgruppe,
+        concept.type.join(", "),
+        concept.phase.join(", "),
+        concept.seasonTags.join(", "),
+        concept.dayTags.join(", "),
+        concept.timeTags.join(", "),
+        concept.description,
+        concept.verdiForBrukerne,
+        concept.verdiForOrganisasjonene,
+        concept.hvaMåVærePåPlass,
+        concept.hvorStarterVi,
+        concept.imageUrl,
+      ]);
+    });
+
+    // Convert to CSV string
+    const csvContent = csvRows
+      .map((row) =>
+        row
+          .map((cell) => {
+            // Escape cells that contain commas, quotes, or newlines
+            if (
+              cell.includes(",") ||
+              cell.includes('"') ||
+              cell.includes("\n")
+            ) {
+              return `"${cell.replace(/"/g, '""')}"`;
+            }
+            return cell;
+          })
+          .join(",")
+      )
+      .join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `valgte-konsepter-${new Date().toISOString().split("T")[0]}.csv`
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clear selection after download
+    setSelectedConceptIds(new Set());
+  };
+
   return (
     <main>
       {/* Filter bar */}
       <section className="filter-bar">
-        <div className="filter-group">
-          <span className="filter-label">Fase</span>
-          <div className="tag-container">
-            {phases.map((p) => (
-              <FilterTag
-                key={p}
-                label={p}
-                active={selectedPhases.includes(p)}
-                onToggle={() => handleTogglePhase(p)}
+        <div className="filter-bar-header">
+          <img
+            src="/images/MITTROMMET.png"
+            alt="Logo"
+            className="filter-bar-logo"
+          />
+          <div className="filter-group filter-group-search">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Søk i arkivet..."
+                value={search}
+                onChange={(e) => handleSearchChange(e.target.value)}
               />
-            ))}
+            </div>
           </div>
         </div>
-
-        <div className="filter-group">
-          <span className="filter-label">Type</span>
-          <div className="tag-container">
-            {conceptTypes.map((t) => (
-              <FilterTag
-                key={t}
-                label={t}
-                active={selectedTypes.includes(t)}
-                onToggle={() => handleToggleType(t)}
-              />
-            ))}
+        <div id="filter-bar-content" className="filter-bar-content">
+          <div className="filter-group">
+            <span className="filter-label">Fase</span>
+            <div className="tag-container">
+              {phases.map((p) => (
+                <FilterTag
+                  key={p}
+                  label={p}
+                  active={selectedPhases.includes(p)}
+                  onToggle={() => handleTogglePhase(p)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="filter-group">
-          <span className="filter-label">Årstid</span>
-          <div className="tag-container">
-            {seasons.map((s) => (
-              <FilterTag
-                key={s}
-                label={s}
-                active={selectedSeasons.includes(s)}
-                onToggle={() => handleToggleSeason(s)}
-              />
-            ))}
+          <div className="filter-group">
+            <span className="filter-label">Type</span>
+            <div className="tag-container">
+              {conceptTypes.map((t) => (
+                <FilterTag
+                  key={t}
+                  label={t}
+                  active={selectedTypes.includes(t)}
+                  onToggle={() => handleToggleType(t)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="filter-group">
-          <span className="filter-label">Dager</span>
-          <div className="tag-container">
-            {days.map((d) => (
-              <FilterTag
-                key={d}
-                label={d}
-                active={selectedDays.includes(d)}
-                onToggle={() => handleToggleDay(d)}
-              />
-            ))}
+          <div className="filter-group">
+            <span className="filter-label">Årstid</span>
+            <div className="tag-container">
+              {seasons.map((s) => (
+                <FilterTag
+                  key={s}
+                  label={s}
+                  active={selectedSeasons.includes(s)}
+                  onToggle={() => handleToggleSeason(s)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="filter-group">
-          <span className="filter-label">Tid</span>
-          <div className="tag-container">
-            {times.map((t) => (
-              <FilterTag
-                key={t}
-                label={t}
-                active={selectedTimes.includes(t)}
-                onToggle={() => handleToggleTime(t)}
-              />
-            ))}
+          <div className="filter-group">
+            <span className="filter-label">Dager</span>
+            <div className="tag-container">
+              {days.map((d) => (
+                <FilterTag
+                  key={d}
+                  label={d}
+                  active={selectedDays.includes(d)}
+                  onToggle={() => handleToggleDay(d)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="filter-group filter-group-search">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Søk i arkivet..."
-              value={search}
-              onChange={(e) => handleSearchChange(e.target.value)}
-            />
+          <div className="filter-group">
+            <span className="filter-label">Tid</span>
+            <div className="tag-container">
+              {times.map((t) => (
+                <FilterTag
+                  key={t}
+                  label={t}
+                  active={selectedTimes.includes(t)}
+                  onToggle={() => handleToggleTime(t)}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1007,11 +1150,48 @@ const ProductPage = () => {
         <button
           type="button"
           className="add-concept-btn"
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "12px",
+          }}
           onClick={() => setIsMethodologyModalOpen(true)}
         >
           Metode for testing
         </button>
       </section>
+
+      {/* Selection bar */}
+      {selectedConceptIds.size > 0 && (
+        <div className="selection-bar">
+          <div className="selection-bar-content">
+            <span className="selection-count">
+              {selectedConceptIds.size} konsept
+              {selectedConceptIds.size !== 1 ? "er" : ""} valgt
+            </span>
+            <div className="selection-actions">
+              <button
+                type="button"
+                className="select-all-btn"
+                onClick={handleSelectAll}
+              >
+                {selectedConceptIds.size === pageItems.length
+                  ? "Fjern alle"
+                  : "Velg alle på siden"}
+              </button>
+              <button
+                type="button"
+                className="download-selected-btn"
+                onClick={handleDownloadSelected}
+              >
+                Last ned valgte ({selectedConceptIds.size})
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Grid */}
 
@@ -1022,7 +1202,12 @@ const ProductPage = () => {
           </div>
         ) : (
           pageItems.map((concept) => (
-            <ConceptCard key={concept.id} concept={concept} />
+            <ConceptCard
+              key={concept.id}
+              concept={concept}
+              isSelected={selectedConceptIds.has(concept.id)}
+              onSelect={handleSelectConcept}
+            />
           ))
         )}
       </section>

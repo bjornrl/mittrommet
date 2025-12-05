@@ -91,7 +91,7 @@ const AboutPage = () => {
           }}
         >
           <img
-            src="/Framdrift.png"
+            src="/images/RT&SM-Prosess.png"
             alt="Diagram som illustrerer utviklingsfaser for Mittrommet"
             style={{
               maxWidth: "100%",
