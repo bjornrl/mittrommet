@@ -23,6 +23,7 @@ interface Concept {
   hvaMåVærePåPlass: string;
   hvorStarterVi: string;
   description: string;
+  imageUrl: string;
 }
 
 const phases: Phase[] = ["Nåtid", "Mellomtid", "Nytid"];
@@ -112,6 +113,7 @@ export function parseCSVToConcepts(csvText: string): Concept[] {
       hvorStarterVi: row["Hvor starter vi"] || row["hvorStarterVi"] || "",
       description:
         row["Beskrivelse"] || row["beskrivelse"] || row["Description"] || "",
+      imageUrl: row["ImageURL"] || row["imageUrl"] || row["ImageUrl"] || "",
     };
 
     if (concept.title) {
@@ -255,6 +257,7 @@ const ConceptModal = ({
       hvaMåVærePåPlass: hvaMåVærePåPlass.trim(),
       hvorStarterVi: hvorStarterVi.trim(),
       description: description.trim(),
+      imageUrl: "",
     };
 
     onSave(conceptData);
@@ -533,10 +536,9 @@ const FilterTag = ({ label, active, onToggle }: FilterTagProps) => {
 
 interface ConceptCardProps {
   concept: Concept;
-  onEdit: (concept: Concept) => void;
 }
 
-const ConceptCard = ({ concept, onEdit }: ConceptCardProps) => {
+const ConceptCard = ({ concept }: ConceptCardProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const getTypeColorClass = (type: ConceptType): string => {
@@ -595,7 +597,28 @@ const ConceptCard = ({ concept, onEdit }: ConceptCardProps) => {
             </span>
           ))}
         </div>
-        Wireframe
+        {concept.imageUrl ? (
+          <img
+            src={concept.imageUrl}
+            alt={concept.title}
+            className="card-image-content"
+            onError={(e) => {
+              // Fallback to placeholder if image fails to load
+              const target = e.target as HTMLImageElement;
+              target.style.display = "none";
+              const placeholder = target.nextElementSibling as HTMLElement;
+              if (placeholder) {
+                placeholder.style.display = "flex";
+              }
+            }}
+          />
+        ) : null}
+        <div
+          className="card-image-placeholder"
+          style={{ display: concept.imageUrl ? "none" : "flex" }}
+        >
+          Wireframe
+        </div>
       </div>
       <div className="card-header">
         <h3 className="card-title">{concept.title}</h3>
@@ -718,28 +741,6 @@ const ConceptCard = ({ concept, onEdit }: ConceptCardProps) => {
               />
             </svg>
           </button>
-          <button
-            type="button"
-            className="edit-btn"
-            onClick={() => onEdit(concept)}
-            title="Rediger konsept"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
-          </button>
         </div>
       </div>
     </article>
@@ -751,7 +752,8 @@ const ConceptCard = ({ concept, onEdit }: ConceptCardProps) => {
 const ProductPage = () => {
   const [concepts, setConcepts] = useState<Concept[]>(initialConcepts);
   const [search, setSearch] = useState("");
-  const [phase, setPhase] = useState<Phase | "alle">("alle");
+  const [selectedPhases, setSelectedPhases] = useState<Phase[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<ConceptType[]>([]);
   const [selectedSeasons, setSelectedSeasons] = useState<Season[]>([]);
   const [selectedDays, setSelectedDays] = useState<DayType[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<TimeType[]>([]);
@@ -792,7 +794,17 @@ const ProductPage = () => {
         item.hvorStarterVi.toLowerCase().includes(normalizedSearch);
       if (!searchMatch) return false;
 
-      if (phase !== "alle" && !item.phase.some((p) => p === phase)) {
+      if (
+        selectedPhases.length > 0 &&
+        !item.phase.some((p) => selectedPhases.includes(p))
+      ) {
+        return false;
+      }
+
+      if (
+        selectedTypes.length > 0 &&
+        !item.type.some((t) => selectedTypes.includes(t))
+      ) {
         return false;
       }
 
@@ -819,7 +831,15 @@ const ProductPage = () => {
 
       return true;
     });
-  }, [concepts, search, phase, selectedSeasons, selectedDays, selectedTimes]);
+  }, [
+    concepts,
+    search,
+    selectedPhases,
+    selectedTypes,
+    selectedSeasons,
+    selectedDays,
+    selectedTimes,
+  ]);
 
   const totalPages = Math.ceil(filteredConcepts.length / itemsPerPage) || 1;
   const pageStart = (currentPage - 1) * itemsPerPage;
@@ -846,9 +866,18 @@ const ProductPage = () => {
     );
   };
 
-  const handlePhaseChange = (value: Phase | "alle") => {
-    setPhase(value);
+  const handleTogglePhase = (value: Phase) => {
     setCurrentPage(1);
+    setSelectedPhases((prev) =>
+      prev.includes(value) ? prev.filter((p) => p !== value) : [...prev, value]
+    );
+  };
+
+  const handleToggleType = (value: ConceptType) => {
+    setCurrentPage(1);
+    setSelectedTypes((prev) =>
+      prev.includes(value) ? prev.filter((t) => t !== value) : [...prev, value]
+    );
   };
 
   const handleSearchChange = (value: string) => {
@@ -859,11 +888,6 @@ const ProductPage = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleEditConcept = (concept: Concept) => {
-    setEditingConcept(concept);
-    setIsModalOpen(true);
   };
 
   const handleSaveConcept = (concept: Concept) => {
@@ -888,18 +912,30 @@ const ProductPage = () => {
       <section className="filter-bar">
         <div className="filter-group">
           <span className="filter-label">Fase</span>
-          <select
-            className="select"
-            value={phase}
-            onChange={(e) =>
-              handlePhaseChange(e.target.value as Phase | "alle")
-            }
-          >
-            <option value="alle">Alle Faser</option>
-            <option value="Nåtid">Nåtid</option>
-            <option value="Mellomtid">Mellomtid</option>
-            <option value="Nytid">Nytid</option>
-          </select>
+          <div className="tag-container">
+            {phases.map((p) => (
+              <FilterTag
+                key={p}
+                label={p}
+                active={selectedPhases.includes(p)}
+                onToggle={() => handleTogglePhase(p)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <span className="filter-label">Type</span>
+          <div className="tag-container">
+            {conceptTypes.map((t) => (
+              <FilterTag
+                key={t}
+                label={t}
+                active={selectedTypes.includes(t)}
+                onToggle={() => handleToggleType(t)}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="filter-group">
@@ -986,11 +1022,7 @@ const ProductPage = () => {
           </div>
         ) : (
           pageItems.map((concept) => (
-            <ConceptCard
-              key={concept.id}
-              concept={concept}
-              onEdit={handleEditConcept}
-            />
+            <ConceptCard key={concept.id} concept={concept} />
           ))
         )}
       </section>
