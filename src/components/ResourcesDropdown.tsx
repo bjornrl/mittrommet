@@ -22,7 +22,7 @@ export const ResourcesDropdown = ({
 }: ResourcesDropdownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleDownload = (filename: string, type?: "pdf" | "podcast") => {
+  const handleDownload = (filename: string) => {
     // Create a temporary anchor element to trigger download
     const link = document.createElement("a");
     link.href = `/resources/${filename}`;
@@ -161,7 +161,7 @@ export const ResourcesDropdown = ({
                 </span>
               </div>
               <button
-                onClick={() => handleDownload(resource.filename, resource.type)}
+                onClick={() => handleDownload(resource.filename)}
                 style={{
                   padding: "0.375rem 0.75rem",
                   backgroundColor: "#e9504c",
