@@ -33,10 +33,37 @@ export default function LandingPage() {
             >
               MITTROMMET
             </h1>
-            <p>
-              Sambruk, samhandling og samskaping av nytt bygg for Rogaland
-              Teater og Stavanger Museum.
-            </p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  margin: 0,
+                  padding: 0,
+                  color: "#ffffff",
+                  textAlign: "center",
+                  width: "50%",
+                  justifyContent: "center",
+                }}
+              >
+                Denne siden består av en idébank og presentasjoner, samt
+                KI-genererte podcaster om MITTROMMET. Sammen er de verktøy som
+                skal hjelpe deg og å forstå hvordan vi ønsker å utforme
+                MITTROMMET slik at det enkelt kan leses og forstås. MITTROMMET
+                er den overordnede startegien og føringene for hvordan vi skal
+                sørge for at sammenslåingen av Rogaland Teater og Stavanger
+                Museum blir en suksess.
+                {/* Sambruk, samhandling og samskaping av nytt bygg for Rogaland
+              Teater og Stavanger Museum. */}
+              </p>
+            </div>
           </div>
         }
       >

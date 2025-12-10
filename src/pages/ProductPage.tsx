@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import MethodologyModal from "../components/MethodologyModal";
 import Papa from "papaparse";
+import { NavLink } from "react-router-dom";
 
 type Phase = "Nåtid" | "Mellomtid" | "Nytid";
 type Season = "Vår" | "Sommer" | "Høst" | "Vinter";
@@ -1026,11 +1027,32 @@ const ProductPage = () => {
       {/* Filter bar */}
       <section className="filter-bar">
         <div className="filter-bar-header">
-          <img
-            src="/images/MITTROMMET.png"
-            alt="Logo"
-            className="filter-bar-logo"
-          />
+          <NavLink
+            style={{
+              border: "none",
+              justifyContent: "flex-start",
+              textDecoration: "none",
+              color: "inherit",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              padding: 0,
+              margin: 0,
+            }}
+            to="/"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "nav-link-active" : ""}`
+            }
+            end
+          >
+            <img
+              src="/images/MITTROMMET.png"
+              alt="Logo"
+              className="filter-bar-logo"
+            />
+          </NavLink>
           <div className="filter-group filter-group-search">
             <div className="search-container">
               <input

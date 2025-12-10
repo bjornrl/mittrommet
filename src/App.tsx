@@ -52,7 +52,7 @@ function App() {
               `nav-link ${isActive ? "nav-link-active" : ""}`
             }
           >
-            Tjenestekonsepter
+            Idébank
           </NavLink>
           <button
             ref={pdfsButtonRef}
@@ -99,13 +99,19 @@ function App() {
         resources={[
           {
             id: 1,
-            name: "Tronds presentasjon",
+            name: "Det tredje rommet",
             filename: "tronds-presentasjon.pdf",
             type: "pdf",
           },
           {
             id: 2,
-            name: "Joana presentasjon",
+            name: "Tjenestekonsepter",
+            filename: "joana-presentasjon.pdf",
+            type: "pdf",
+          },
+          {
+            id: 3,
+            name: "Organisasjon",
             filename: "joana-presentasjon.pdf",
             type: "pdf",
           },

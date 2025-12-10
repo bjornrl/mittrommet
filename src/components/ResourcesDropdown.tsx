@@ -14,6 +14,27 @@ interface ResourcesDropdownProps {
   resources: Resource[];
 }
 
+const HowToReadPages = () => {
+  return (
+    <div>
+      <h2>Hvordan lese denne siden?</h2>
+      <p>
+        Hvordan lese denne siden? Denne siden gir en oversikt over hvordan
+        Mittrommet kan vokse over tid – med start nå, ikke en gang langt fram i
+        tid. I dette arbeidet har vi delt Mittrommet inn i tre utviklingsfaser:
+        <ul>
+          <li>Nåtid (2026–2029)</li>
+          <li>Mellomtid (2029–2034)</li>
+          <li>Nytid (fra 2034 og videre)</li>
+        </ul>
+        Nåtid (2026–2029), Mellomtid (2029–2034) og Nytid (fra 2034 og videre),
+        og i tre hovedområder for utvikling: organisasjonen, «tredjerommet» og
+        tjenestene og konseptene for ulike målgrupper.
+      </p>
+    </div>
+  );
+};
+
 export const ResourcesDropdown = ({
   isOpen,
   onClose,
@@ -76,11 +97,12 @@ export const ResourcesDropdown = ({
         position: "fixed",
         backgroundColor: "#ffffff",
         borderRadius: "8px",
+        border: "1px solid #e9504c",
         padding: "0.75rem",
         boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.15)",
         zIndex: 2000,
         minWidth: "250px",
-        maxHeight: "400px",
+        maxHeight: "700px",
         overflowY: "auto",
       }}
     >
@@ -91,6 +113,7 @@ export const ResourcesDropdown = ({
           gap: "0.5rem",
         }}
       >
+        <HowToReadPages />
         {resources.map((resource) => {
           const isPodcast = resource.type === "podcast";
           return (
