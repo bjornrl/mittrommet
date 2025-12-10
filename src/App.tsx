@@ -60,14 +60,7 @@ function App() {
               setIsPdfsDropdownOpen(!isPdfsDropdownOpen);
               setIsPodcastsDropdownOpen(false);
             }}
-            className="nav-link"
-            style={{
-              border: "none",
-              borderRight: "1px solid rgba(0, 0, 0, 0.1)",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              width: "100%",
-            }}
+            className="nav-link border-none border-r border-r-black/10 cursor-pointer font-inherit w-full"
           >
             Presentasjoner
           </button>
@@ -78,14 +71,7 @@ function App() {
               setIsPodcastsDropdownOpen(!isPodcastsDropdownOpen);
               setIsPdfsDropdownOpen(false);
             }}
-            className="nav-link"
-            style={{
-              border: "none",
-              borderRight: "1px solid rgba(0, 0, 0, 0.1)",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              width: "100%",
-            }}
+            className="nav-link border-none border-r border-r-black/10 cursor-pointer font-inherit w-full"
           >
             Podcaster
           </button>

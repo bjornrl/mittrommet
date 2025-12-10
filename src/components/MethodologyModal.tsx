@@ -9,8 +9,7 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
-        className="modal-content"
-        style={{ maxWidth: "900px" }}
+        className="modal-content max-w-[900px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
@@ -19,7 +18,7 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
             ×
           </button>
         </div>
-        <div style={{ padding: "24px", maxHeight: "80vh", overflowY: "auto" }}>
+        <div className="p-6 max-h-[80vh] overflow-y-auto">
           <p className="about-text">
             For å gjøre hvert eksperiment nyttig, følger vi en enkel
             læringssyklus i fire trinn. Hver test, enten det er en liten
@@ -28,24 +27,10 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
             læringen til bedre rom, programmer og måter å samarbeide på.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "0px",
-              marginTop: "24px",
-            }}
-          >
-            <div style={{ display: "flex", width: "100%" }}>
-              <div
-                style={{
-                  backgroundColor: "#ef4444",
-                  width: "50%",
-                  padding: "20px",
-                  color: "white",
-                }}
-              >
-                <h2 style={{ color: "white" }}>Definer intensjon</h2>
+          <div className="flex flex-col gap-0 mt-6">
+            <div className="flex w-full">
+              <div className="bg-[#ef4444] w-1/2 p-5 text-white">
+                <h2 className="text-white">Definer intensjon</h2>
 
                 <p className="text-white">
                   <strong>Hva ønsker vi å lære?</strong>
@@ -76,37 +61,17 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
                   </ul>
                 </p>
               </div>
-              <div
-                style={{
-                  width: "50%",
-                  padding: "20px",
-                  color: "#ef4444",
-                }}
-              >
-                <h1 style={{ fontSize: "80px" }}>1</h1>
+              <div className="w-1/2 p-5 text-[#ef4444]">
+                <h1 className="text-[80px]">1</h1>
               </div>
             </div>
 
-            <div style={{ display: "flex", width: "100%" }}>
-              <div
-                style={{
-                  width: "50%",
-                  padding: "20px",
-                  color: "#ef4444",
-                  textAlign: "right",
-                }}
-              >
-                <h1 style={{ fontSize: "80px" }}>2</h1>
+            <div className="flex w-full">
+              <div className="w-1/2 p-5 text-[#ef4444] text-right">
+                <h1 className="text-[80px]">2</h1>
               </div>
-              <div
-                style={{
-                  backgroundColor: "#ef4444",
-                  width: "50%",
-                  padding: "20px",
-                  color: "white",
-                }}
-              >
-                <h2 style={{ color: "white" }}>Utform testen</h2>
+              <div className="bg-[#ef4444] w-1/2 p-5 text-white">
+                <h2 className="text-white">Utform testen</h2>
                 <p className="text-white">
                   <strong>Hvordan setter vi den opp?</strong>
                 </p>
@@ -136,16 +101,9 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
                 </p>
               </div>
             </div>
-            <div style={{ display: "flex", width: "100%" }}>
-              <div
-                style={{
-                  backgroundColor: "#ef4444",
-                  width: "50%",
-                  padding: "20px",
-                  color: "white",
-                }}
-              >
-                <h2 style={{ color: "white" }}>Analyser dataene</h2>
+            <div className="flex w-full">
+              <div className="bg-[#ef4444] w-1/2 p-5 text-white">
+                <h2 className="text-white">Analyser dataene</h2>
                 <p className="text-white">Hva har vi lært?</p>
                 <p className="text-white">
                   Etter testen oppsummerer vi de viktigste fakta (tall,
@@ -173,36 +131,16 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
                   </ul>
                 </p>
               </div>
-              <div
-                style={{
-                  width: "50%",
-                  padding: "20px",
-                  color: "#ef4444",
-                }}
-              >
-                <h1 style={{ fontSize: "80px" }}>3</h1>
+              <div className="w-1/2 p-5 text-[#ef4444]">
+                <h1 className="text-[80px]">3</h1>
               </div>
             </div>
-            <div style={{ display: "flex", width: "100%" }}>
-              <div
-                style={{
-                  width: "50%",
-                  padding: "20px",
-                  color: "#ef4444",
-                  textAlign: "right",
-                }}
-              >
-                <h1 style={{ fontSize: "80px" }}>4</h1>
+            <div className="flex w-full">
+              <div className="w-1/2 p-5 text-[#ef4444] text-right">
+                <h1 className="text-[80px]">4</h1>
               </div>
-              <div
-                style={{
-                  backgroundColor: "#ef4444",
-                  width: "50%",
-                  padding: "20px",
-                  color: "white",
-                }}
-              >
-                <h2 style={{ color: "white" }}>Oversett læringen</h2>
+              <div className="bg-[#ef4444] w-1/2 p-5 text-white">
+                <h2 className="text-white">Oversett læringen</h2>
                 <p className="text-white">
                   <strong>
                     Hva bør endres i arkitektur, programmer og organisering?
@@ -214,13 +152,7 @@ const MethodologyModal = ({ isOpen, onClose }: MethodologyModalProps) => {
                   og programmeringen av MIDTROMMET, og for roller, rutiner og
                   partnerskap i organisasjonene. Disse beslutningene loggføres,
                   slik at hver test former det langsiktige prosjektet.
-                  <ul
-                    style={{
-                      marginTop: "1em",
-                      marginBottom: "1em",
-                      textAlign: "left",
-                    }}
-                  >
+                  <ul className="my-4 text-left">
                     <li>
                       <strong>For arkitektur:</strong> Hva betyr dette for
                       innganger, synlighet, terskler, sonering, sitteplasser,

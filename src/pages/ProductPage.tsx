@@ -383,7 +383,7 @@ const ConceptModal = ({
               ))}
             </div>
             {selectedTypes.length === 0 && (
-              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+              <p className="text-red-500 text-xs mt-1">
                 Minst én type må velges
               </p>
             )}
@@ -409,7 +409,7 @@ const ConceptModal = ({
               ))}
             </div>
             {selectedPhases.length === 0 && (
-              <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+              <p className="text-red-500 text-xs mt-1">
                 Minst én fase må velges
               </p>
             )}
@@ -673,9 +673,7 @@ const ConceptCard = ({
                 }
               }}
             />
-            <div className="card-image-placeholder" style={{ display: "none" }}>
-              Wireframe
-            </div>
+            <div className="card-image-placeholder hidden">Wireframe</div>
           </>
         ) : (
           <div className="card-image-placeholder">Wireframe</div>
@@ -791,9 +789,8 @@ const ConceptCard = ({
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
-              style={{
-                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-              }}
+              className={expanded ? "rotate-180" : "rotate-0"}
+              style={{ transition: "transform 0.3s" }}
             >
               <path
                 strokeLinecap="round"
@@ -1028,22 +1025,11 @@ const ProductPage = () => {
       <section className="filter-bar">
         <div className="filter-bar-header">
           <NavLink
-            style={{
-              border: "none",
-              justifyContent: "flex-start",
-              textDecoration: "none",
-              color: "inherit",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-            }}
             to="/"
             className={({ isActive }) =>
-              `nav-link ${isActive ? "nav-link-active" : ""}`
+              `nav-link border-none justify-start no-underline text-inherit w-full h-full flex items-center cursor-pointer p-0 m-0 ${
+                isActive ? "nav-link-active" : ""
+              }`
             }
             end
           >
@@ -1140,27 +1126,10 @@ const ProductPage = () => {
         isOpen={isMethodologyModalOpen}
         onClose={() => setIsMethodologyModalOpen(false)}
       />
-      <section
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "18px 18px",
-        }}
-      >
+      <section className="w-full flex justify-center items-center p-[18px]">
         <button
           type="button"
-          className="add-concept-btn"
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "12px",
-            backgroundColor: "#363254",
-            border: "none",
-          }}
+          className="add-concept-btn w-full flex justify-center items-center p-3 bg-[#363254] border-none"
           onClick={() => setIsMethodologyModalOpen(true)}
         >
           Metode for testing

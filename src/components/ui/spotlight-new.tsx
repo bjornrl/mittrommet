@@ -36,19 +36,7 @@ export const Spotlight = ({
       transition={{
         duration: 1.5,
       }}
-      style={{
-        pointerEvents: "none",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: "100%",
-        width: "100%",
-        margin: 0,
-        padding: 0,
-        boxSizing: "border-box",
-      }}
+      className="pointer-events-none absolute inset-0 h-full w-full m-0 p-0 box-border"
     >
       <motion.div
         animate={{
@@ -60,60 +48,35 @@ export const Spotlight = ({
           repeatType: "reverse",
           ease: "easeInOut",
         }}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 40,
-          pointerEvents: "none",
-        }}
+        className="absolute top-0 left-0 w-full h-full z-[40] pointer-events-none"
       >
         <div
+          className="absolute top-0 left-0 m-0 p-0 box-border"
           style={{
             transform: `translateY(${translateY}px) rotate(-45deg)`,
             background: gradientFirst,
             width: `${width}px`,
             height: `${height}px`,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
           }}
         />
 
         <div
+          className="absolute top-0 left-0 m-0 p-0 box-border origin-top-left"
           style={{
             transform: "rotate(-45deg) translate(5%, -50%)",
             background: gradientSecond,
             width: `${smallWidth}px`,
             height: `${height}px`,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            transformOrigin: "top left",
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
           }}
         />
 
         <div
+          className="absolute top-0 left-0 m-0 p-0 box-border origin-top-left"
           style={{
             transform: "rotate(-45deg) translate(-180%, -70%)",
             background: gradientThird,
             width: `${smallWidth}px`,
             height: `${height}px`,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            transformOrigin: "top left",
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
           }}
         />
       </motion.div>
@@ -128,60 +91,35 @@ export const Spotlight = ({
           repeatType: "reverse",
           ease: "easeInOut",
         }}
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 40,
-          pointerEvents: "none",
-        }}
+        className="absolute top-0 right-0 w-full h-full z-[40] pointer-events-none"
       >
         <div
+          className="absolute top-0 right-0 m-0 p-0 box-border"
           style={{
             transform: `translateY(${translateY}px) rotate(45deg)`,
             background: gradientFirst,
             width: `${width}px`,
             height: `${height}px`,
-            position: "absolute",
-            top: 0,
-            right: 0,
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
           }}
         />
 
         <div
+          className="absolute top-0 right-0 m-0 p-0 box-border origin-top-right"
           style={{
             transform: "rotate(45deg) translate(-5%, -50%)",
             background: gradientSecond,
             width: `${smallWidth}px`,
             height: `${height}px`,
-            position: "absolute",
-            top: 0,
-            right: 0,
-            transformOrigin: "top right",
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
           }}
         />
 
         <div
+          className="absolute top-0 right-0 m-0 p-0 box-border origin-top-right"
           style={{
             transform: "rotate(45deg) translate(180%, -70%)",
             background: gradientThird,
             width: `${smallWidth}px`,
             height: `${height}px`,
-            position: "absolute",
-            top: 0,
-            right: 0,
-            transformOrigin: "top right",
-            margin: 0,
-            padding: 0,
-            boxSizing: "border-box",
           }}
         />
       </motion.div>

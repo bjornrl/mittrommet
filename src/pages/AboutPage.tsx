@@ -1,46 +1,20 @@
 const Circle = () => {
   return (
-    <div
-      style={{
-        width: "12px",
-        height: "12px",
-        borderRadius: "50%",
-        backgroundColor: "#ef4444",
-        flexShrink: 0,
-        marginRight: "12px",
-      }}
-    />
+    <div className="w-3 h-3 rounded-full bg-[#ef4444] shrink-0 mr-3" />
   );
 };
 
 const AboutPage = () => {
   return (
-    <main
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-      }}
-    >
+    <main className="relative min-h-screen">
       <div
+        className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-10 z-0"
         style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
           backgroundImage: 'url("/Mittrommet Bakgrunn.png")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
           backgroundAttachment: "fixed",
-          opacity: 0.1,
-          zIndex: 0,
         }}
       />
-      <div
-        className="about-container"
-        style={{ position: "relative", zIndex: 1, marginTop: "180px" }}
-      >
+      <div className="about-container relative z-[1] mt-[180px]">
         <section className="about-section">
           <h1 className="about-title">Hva er Mittrommet?</h1>
           <p className="about-text">
@@ -61,16 +35,9 @@ const AboutPage = () => {
         </section>
 
         <section className="about-section">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: "16px",
-            }}
-          >
+          <div className="flex flex-row items-center gap-4">
             <Circle />
-            <h2 className="about-heading" style={{ margin: 0 }}>
+            <h2 className="about-heading m-0">
               Hvordan lese denne siden?
             </h2>
           </div>
@@ -83,22 +50,12 @@ const AboutPage = () => {
             tjenestene og konseptene for ulike målgrupper.
           </p>
         </section>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            margin: "32px 0",
-          }}
-        >
+        <div className="flex justify-center my-8">
           <img
             src="/images/RT&SM-Prosess.png"
             alt="Diagram som illustrerer utviklingsfaser for Mittrommet"
-            style={{
-              maxWidth: "100%",
-              height: "auto",
-              borderRadius: "8px",
-              boxShadow: "var(--card-shadow-soft)",
-            }}
+            className="max-w-full h-auto rounded-lg"
+            style={{ boxShadow: "var(--card-shadow-soft)" }}
           />
         </div>
       </div>

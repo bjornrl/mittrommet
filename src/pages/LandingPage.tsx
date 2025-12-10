@@ -2,57 +2,15 @@ import { MaskEffect } from "@/components/MaskEffect";
 
 export default function LandingPage() {
   return (
-    <main
-      style={{
-        margin: 0,
-        padding: 0,
-        boxSizing: "border-box",
-        position: "relative",
-        width: "100%",
-        // height: "100vh",
-        overflow: "hidden",
-      }}
-    >
+    <main className="m-0 p-0 box-border relative w-full overflow-hidden">
       <MaskEffect
         revealText={
-          <div
-            style={{
-              textAlign: "center",
-              color: "#ffffff",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "6rem",
-                fontWeight: 700,
-                margin: 0,
-                padding: 0,
-                color: "#ffffff",
-                textAlign: "center",
-              }}
-            >
+          <div className="text-center text-white">
+            <h1 className="text-[6rem] font-bold m-0 p-0 text-white text-center">
               MITTROMMET
             </h1>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                  margin: 0,
-                  padding: 0,
-                  color: "#ffffff",
-                  textAlign: "center",
-                  width: "50%",
-                  justifyContent: "center",
-                }}
-              >
+            <div className="flex justify-center w-full items-center">
+              <p className="text-base font-bold m-0 p-0 text-white text-center w-1/2 justify-center">
                 Denne siden består av en idébank og presentasjoner, samt
                 KI-genererte podcaster om MITTROMMET. Sammen er de verktøy som
                 skal hjelpe deg og å forstå hvordan vi ønsker å utforme
@@ -67,26 +25,10 @@ export default function LandingPage() {
           </div>
         }
       >
-        <h2
-          style={{
-            fontSize: "3rem",
-            fontWeight: 600,
-            margin: 0,
-            padding: 0,
-            color: "#ffffff",
-            textAlign: "center",
-          }}
-        >
+        <h2 className="text-[3rem] font-semibold m-0 p-0 text-white text-center">
           Nye Rogaland teater og Stavanger Museum
         </h2>
-        {/* <p
-          style={{
-            fontSize: "1.5rem",
-            marginTop: "1rem",
-            color: "#ffffff",
-            textAlign: "center",
-          }}
-        >
+        {/* <p className="text-2xl mt-4 text-white text-center">
           Velkommen til Mittrommet
         </p> */}
       </MaskEffect>
