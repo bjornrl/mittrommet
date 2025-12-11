@@ -1,4 +1,5 @@
 import { MaskEffect } from "@/components/MaskEffect";
+import { ArrowDownIcon } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -15,12 +16,7 @@ export default function LandingPage() {
     >
       <MaskEffect
         revealText={
-          <div
-            style={{
-              textAlign: "center",
-              color: "#ffffff",
-            }}
-          >
+          <div className="flex flex-col items-center justify-center">
             <h1
               style={{
                 fontSize: "6rem",
@@ -64,6 +60,28 @@ export default function LandingPage() {
               Teater og Stavanger Museum. */}
               </p>
             </div>
+            {/* <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                zIndex: 100,
+                pointerEvents: "none",
+                color: "#ffffff",
+
+                height: "100px",
+                position: "fixed",
+                left: "50%",
+                bottom: "30px",
+                transform: "translateX(-50%)",
+              }}
+            >
+              <ArrowDownIcon
+                className="w-10 h-10"
+                style={{ pointerEvents: "auto" }}
+              />
+            </div> */}
           </div>
         }
       >
@@ -77,18 +95,8 @@ export default function LandingPage() {
             textAlign: "center",
           }}
         >
-          Nye Rogaland superteater og Stavanger Museum
+          Nye Rogaland teater og Stavanger Museum
         </h2>
-        {/* <p
-          style={{
-            fontSize: "1.5rem",
-            marginTop: "1rem",
-            color: "#ffffff",
-            textAlign: "center",
-          }}
-        >
-          Velkommen til Mittrommet
-        </p> */}
       </MaskEffect>
       {/* <div>
         <p>aåweodiuabnf oinfasåof nszgnf s </p>
