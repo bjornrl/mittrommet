@@ -1,5 +1,5 @@
 import { MaskEffect } from "@/components/MaskEffect";
-import { ArrowDownIcon } from "lucide-react";
+// import { ArrowDownIcon } from "lucide-react";
 
 export default function LandingPage() {
   return (
