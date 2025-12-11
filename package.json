@@ -13,7 +13,7 @@
     "@tailwindcss/vite": "^4.1.17",
     "@types/papaparse": "^5.5.1",
     "clsx": "^2.1.1",
-    "motion": "^12.23.24",
+    "motion": "^12.23.26",
     "papaparse": "^5.5.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

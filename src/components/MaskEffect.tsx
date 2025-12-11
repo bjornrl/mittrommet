@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useMotionValue, useSpring } from "motion/react";
+import { publicImages } from "@/lib/images";
 
 interface MaskEffectProps {
   children: React.ReactNode;
@@ -22,6 +23,25 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const maskSize = useMotionValue(60);
+  const [imageTransforms, setImageTransforms] = useState<
+    Array<{ x: number; y: number }>
+  >(Array(16).fill({ x: 0, y: 0 }));
+
+  // Generate random sizes for each image (stable across renders)
+  const imageSizes = useMemo(() => {
+    return Array.from({ length: 16 }).map(() => {
+      // Random scale between 0.85 and 1.15 (15% variation)
+      return 0.85 + Math.random() * 0.3;
+    });
+  }, []);
+
+  // Generate random parallax strengths for each image (stable across renders)
+  const imageParallaxStrengths = useMemo(() => {
+    return Array.from({ length: 16 }).map(() => {
+      // Random strength between 0.5x and 1.5x of base strength
+      return 0.5 + Math.random() * 1.0;
+    });
+  }, []);
 
   // Smooth spring animations for mouse position
   const springX = useSpring(mouseX, { stiffness: 1000, damping: 30 });
@@ -96,6 +116,55 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       maskSize.set(isHovered ? 600 : 60);
     }
   }, [isHovered, isTouched, isMobile, maskSize]);
+
+  // Update image transforms based on mouse position
+  useEffect(() => {
+    const updateImageTransforms = () => {
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const mouseXValue = springX.get();
+      const mouseYValue = springY.get();
+
+      // Calculate offset from center (normalized to -1 to 1)
+      const offsetX = (mouseXValue - centerX) / centerX;
+      const offsetY = (mouseYValue - centerY) / centerY;
+
+      // Calculate transforms for each image based on grid position
+      const transforms = Array.from({ length: 16 }).map((_, index) => {
+        const row = Math.floor(index / 4);
+        const col = index % 4;
+
+        // Calculate relative position in grid (-1.5 to 1.5 for 4 columns)
+        const gridX = (col - 1.5) / 1.5;
+        const gridY = (row - 1.5) / 1.5;
+
+        // Apply parallax effect with individual strength for each image
+        const baseParallaxStrength = 15;
+        const individualStrength = imageParallaxStrengths[index] || 1;
+        const parallaxStrength = baseParallaxStrength * individualStrength;
+        const x = offsetX * gridX * parallaxStrength;
+        const y = offsetY * gridY * parallaxStrength;
+
+        return { x, y };
+      });
+
+      setImageTransforms(transforms);
+    };
+
+    const unsubscribeX = springX.on("change", updateImageTransforms);
+    const unsubscribeY = springY.on("change", updateImageTransforms);
+
+    // Initial update
+    updateImageTransforms();
+
+    return () => {
+      unsubscribeX();
+      unsubscribeY();
+    };
+  }, [springX, springY]);
 
   // Update SVG circle in mask and viewBox, and visible circle
   useEffect(() => {
@@ -218,8 +287,9 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
           alignItems: "center",
           justifyContent: "center",
           zIndex: 2,
-          backgroundImage: 'url("/Flyfoto.png")',
-          backgroundSize: "cover",
+          // backgroundImage: 'url("/images/abonnement.png")',
+          // backgroundSize: "cover",
+          backgroundColor: "oklch(20.8% 0.042 265.755)",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           maskImage: `url(#${maskId})`,
@@ -227,24 +297,87 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         }}
       >
         <div
-          onMouseEnter={() => !isMobile && setIsHovered(true)}
-          onMouseLeave={() => !isMobile && setIsHovered(false)}
-          onTouchStart={() => {
-            if (isMobile) {
-              setIsTouched(true);
-            }
-          }}
-          onTouchEnd={() => {
-            if (isMobile) {
-              setIsTouched(false);
-            }
-          }}
           style={{
-            display: "inline-block",
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             touchAction: "manipulation",
           }}
         >
-          {children}
+          {/* Yellow rectangle - furthest back, slightly bigger */}
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: "80%",
+              height: "80%",
+              // backgroundColor: "#eab308",
+              transform: "translate(-50%, -50%)",
+              zIndex: 1,
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gridTemplateRows: "repeat(4, 1fr)",
+              gap: "0px",
+              padding: "8px",
+            }}
+          >
+            {Array.from({ length: 16 }).map((_, index) => {
+              // Cycle through available images if we need more than available
+              const imageIndex = index % publicImages.length;
+              const transform = imageTransforms[index] || { x: 0, y: 0 };
+              const scale = imageSizes[index] || 1;
+              return (
+                <img
+                  key={index}
+                  src={publicImages[imageIndex]}
+                  alt={`Grid image ${index + 1}`}
+                  style={{
+                    width: `${scale * 100}%`,
+                    height: `${scale * 100}%`,
+                    objectFit: "cover",
+                    transform: `translate(${transform.x}px, ${transform.y}px)`,
+                    transition: "transform 0.1s ease-out",
+                  }}
+                />
+              );
+            })}
+          </div>
+          {/* Blue rectangle - in front of yellow */}
+          {/* <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: "350px",
+              height: "250px",
+              backgroundColor: "#3b82f6",
+              transform: "translate(-50%, -50%)",
+              zIndex: 2,
+            }}
+          /> */}
+          {/* Children - in front */}
+          <div
+            onMouseEnter={() => !isMobile && setIsHovered(true)}
+            onMouseLeave={() => !isMobile && setIsHovered(false)}
+            onTouchStart={() => {
+              if (isMobile) {
+                setIsTouched(true);
+              }
+            }}
+            onTouchEnd={() => {
+              if (isMobile) {
+                setIsTouched(false);
+              }
+            }}
+            style={{ position: "relative", zIndex: 3 }}
+          >
+            {children}
+          </div>
         </div>
       </div>
     </div>

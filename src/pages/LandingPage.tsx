@@ -77,7 +77,7 @@ export default function LandingPage() {
             textAlign: "center",
           }}
         >
-          Nye Rogaland teater og Stavanger Museum
+          Nye Rogaland superteater og Stavanger Museum
         </h2>
         {/* <p
           style={{
@@ -90,10 +90,10 @@ export default function LandingPage() {
           Velkommen til Mittrommet
         </p> */}
       </MaskEffect>
-      <div>
+      {/* <div>
         <p>aåweodiuabnf oinfasåof nszgnf s </p>
         <p>aidjbawodnbaodb</p>
-      </div>
+      </div> */}
     </main>
   );
 }
