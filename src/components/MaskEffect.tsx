@@ -151,12 +151,23 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen overflow-hidden bg-[#ef4444]"
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+        backgroundColor: "#ef4444",
+      }}
     >
       {/* SVG mask definition */}
       <svg
         ref={svgRef}
-        className="absolute pointer-events-none w-0 h-0"
+        style={{
+          position: "absolute",
+          pointerEvents: "none",
+          width: 0,
+          height: 0,
+        }}
       >
         <defs>
           <mask id={maskId}>
@@ -169,16 +180,30 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       </svg>
 
       {/* Background layer - revealed text (always visible) */}
-      <div className="absolute inset-0 flex items-center justify-center z-[1]">
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1,
+        }}
+      >
         {revealText}
       </div>
 
       {/* Visible circle that follows mouse/touch - only visible when not hovering/touching */}
       <div
         ref={visibleCircleRef}
-        className="absolute rounded-full bg-black pointer-events-none -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out"
         style={{
+          position: "absolute",
+          borderRadius: "50%",
+          backgroundColor: "#000000",
+          pointerEvents: "none",
           zIndex: 1.5,
+          transform: "translate(-50%, -50%)",
+          transition: "width 0.3s ease, height 0.3s ease, opacity 0.3s ease",
           opacity: (isMobile ? isTouched : isHovered) ? 0 : 1,
         }}
       />
@@ -186,9 +211,17 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       {/* Foreground layer - MITTROMMET text (masked) */}
       <div
         ref={maskedLayerRef}
-        className="absolute inset-0 flex items-center justify-center z-[2] bg-cover bg-center bg-no-repeat"
         style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 2,
           backgroundImage: 'url("/Flyfoto.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           maskImage: `url(#${maskId})`,
           WebkitMaskImage: `url(#${maskId})`,
         }}
@@ -206,8 +239,10 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
               setIsTouched(false);
             }
           }}
-          className="inline-block"
-          style={{ touchAction: "manipulation" }}
+          style={{
+            display: "inline-block",
+            touchAction: "manipulation",
+          }}
         >
           {children}
         </div>

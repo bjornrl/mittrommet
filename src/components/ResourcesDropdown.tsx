@@ -93,18 +93,56 @@ export const ResourcesDropdown = ({
   return (
     <div
       ref={dropdownRef}
-      className="fixed bg-white rounded-lg border border-[#e9504c] p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] z-[2000] min-w-[250px] max-h-[700px] overflow-y-auto"
+      style={{
+        position: "fixed",
+        backgroundColor: "#ffffff",
+        borderRadius: "8px",
+        border: "1px solid #e9504c",
+        padding: "0.75rem",
+        boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.15)",
+        zIndex: 2000,
+        minWidth: "250px",
+        maxHeight: "700px",
+        overflowY: "auto",
+      }}
     >
-      <div className="flex flex-col gap-2">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.5rem",
+        }}
+      >
         <HowToReadPages />
         {resources.map((resource) => {
           const isPodcast = resource.type === "podcast";
           return (
             <div
               key={resource.id}
-              className="flex items-center justify-between p-3 rounded transition-colors duration-200 cursor-pointer hover:bg-[#f7fafc]"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "0.75rem",
+                borderRadius: "4px",
+                transition: "background-color 0.2s",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f7fafc";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+              }}
             >
-              <div className="flex items-center gap-3 flex-1">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.75rem",
+                  flex: 1,
+                }}
+              >
                 {isPodcast ? (
                   <svg
                     width="20"
@@ -113,7 +151,7 @@ export const ResourcesDropdown = ({
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
-                    className="text-[#e9504c] shrink-0"
+                    style={{ color: "#e9504c", flexShrink: 0 }}
                   >
                     <circle cx="12" cy="12" r="10" />
                     <polygon points="10 8 16 12 10 16 10 8" />
@@ -126,7 +164,7 @@ export const ResourcesDropdown = ({
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
-                    className="text-[#e9504c] shrink-0"
+                    style={{ color: "#e9504c", flexShrink: 0 }}
                   >
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
@@ -135,13 +173,36 @@ export const ResourcesDropdown = ({
                     <polyline points="10 9 9 9 8 9" />
                   </svg>
                 )}
-                <span className="text-sm text-[#1a202c] font-medium">
+                <span
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "#1a202c",
+                    fontWeight: 500,
+                  }}
+                >
                   {resource.name}
                 </span>
               </div>
               <button
                 onClick={() => handleDownload(resource.filename)}
-                className="px-3 py-1.5 bg-[#e9504c] text-white border-none rounded cursor-pointer text-xs font-medium transition-colors duration-200 shrink-0 hover:bg-[#c43e3a]"
+                style={{
+                  padding: "0.375rem 0.75rem",
+                  backgroundColor: "#e9504c",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  transition: "background-color 0.2s",
+                  flexShrink: 0,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#c43e3a";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e9504c";
+                }}
               >
                 Last ned
               </button>

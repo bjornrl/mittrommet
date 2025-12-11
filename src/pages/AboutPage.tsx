@@ -1,20 +1,46 @@
 const Circle = () => {
   return (
-    <div className="w-3 h-3 rounded-full bg-[#ef4444] shrink-0 mr-3" />
+    <div
+      style={{
+        width: "12px",
+        height: "12px",
+        borderRadius: "50%",
+        backgroundColor: "#ef4444",
+        flexShrink: 0,
+        marginRight: "12px",
+      }}
+    />
   );
 };
 
 const AboutPage = () => {
   return (
-    <main className="relative min-h-screen">
+    <main
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+      }}
+    >
       <div
-        className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-10 z-0"
         style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
           backgroundImage: 'url("/Mittrommet Bakgrunn.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           backgroundAttachment: "fixed",
+          opacity: 0.1,
+          zIndex: 0,
         }}
       />
-      <div className="about-container relative z-[1] mt-[180px]">
+      <div
+        className="about-container"
+        style={{ position: "relative", zIndex: 1, marginTop: "180px" }}
+      >
         <section className="about-section">
           <h1 className="about-title">Hva er Mittrommet?</h1>
           <p className="about-text">
@@ -35,27 +61,42 @@ const AboutPage = () => {
         </section>
 
         <section className="about-section">
-          <div className="flex flex-row items-center gap-4">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
             <Circle />
-            <h2 className="about-heading m-0">
-              Hvordan lese denne siden?
+            <h2 className="about-heading" style={{ margin: 0 }}>
+              Hva er MITTROMMET?
             </h2>
           </div>
           <p className="about-text">
-            Denne siden gir en oversikt over hvordan Mittrommet kan vokse over
-            tid – med start nå, ikke en gang langt fram i tid. I dette arbeidet
-            har vi delt Mittrommet inn i tre utviklingsfaser: Nåtid (2026–2029),
-            Mellomtid (2029–2034) og Nytid (fra 2034 og videre), og i tre
-            hovedområder for utvikling: organisasjonen, «tredjerommet» og
-            tjenestene og konseptene for ulike målgrupper.
+            MITTROMMET representerer den overlappende sonen der institusjonene
+            møtes. Det er et navn skildrer den samlede prosessen fremover, og
+            rommene i det ferdige bygget som skal inneholde delte funksjoner
+            mellom teateret, museet og Stavangers mangfoldige innbyggere.
           </p>
         </section>
-        <div className="flex justify-center my-8">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            margin: "32px 0",
+          }}
+        >
           <img
             src="/images/RT&SM-Prosess.png"
             alt="Diagram som illustrerer utviklingsfaser for Mittrommet"
-            className="max-w-full h-auto rounded-lg"
-            style={{ boxShadow: "var(--card-shadow-soft)" }}
+            style={{
+              maxWidth: "100%",
+              height: "auto",
+              borderRadius: "8px",
+              boxShadow: "var(--card-shadow-soft)",
+            }}
           />
         </div>
       </div>
