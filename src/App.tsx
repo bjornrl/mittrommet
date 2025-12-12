@@ -99,20 +99,27 @@ function App() {
         resources={[
           {
             id: 1,
-            name: "Det tredje rommet",
+            name: "Superdokument",
             filename: "tronds-presentasjon.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/c7288b6207.html",
+            iframeUrl: "https://heyzine.com/flip-book/d450b8b0c7.html",
           },
           {
             id: 2,
-            name: "Tjenestekonsepter",
-            filename: "joana-presentasjon.pdf",
+            name: "Det tredje rommet",
+            filename: "tronds-presentasjon.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/c7288b6207.html",
+            iframeUrl: "https://heyzine.com/flip-book/7caf07faf0.html",
           },
           {
             id: 3,
+            name: "Tjenestekonsepter",
+            filename: "joana-presentasjon.pdf",
+            type: "pdf",
+            iframeUrl: "https://heyzine.com/flip-book/f3c66cc857.html",
+          },
+          {
+            id: 4,
             name: "Organisasjon",
             filename: "joana-presentasjon.pdf",
             type: "pdf",

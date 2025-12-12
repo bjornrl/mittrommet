@@ -78,6 +78,13 @@ export const ResourcesDropdown = ({
     document.body.removeChild(link);
   };
 
+  // Close modal when dropdown closes
+  useEffect(() => {
+    if (!isOpen) {
+      setOpenModalResourceId(null);
+    }
+  }, [isOpen]);
+
   // Handle clicks outside the dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -249,7 +256,10 @@ export const ResourcesDropdown = ({
                 >
                   {resource.iframeUrl && (
                     <button
-                      onClick={() => setOpenModalResourceId(resource.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenModalResourceId(resource.id);
+                      }}
                       style={{
                         padding: "0.375rem 0.75rem",
                         backgroundColor: "#e9504c",
@@ -272,7 +282,10 @@ export const ResourcesDropdown = ({
                     </button>
                   )}
                   <button
-                    onClick={() => handleDownload(resource.filename)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownload(resource.filename);
+                    }}
                     style={{
                       padding: "0.375rem 0.75rem",
                       backgroundColor: "#e9504c",
