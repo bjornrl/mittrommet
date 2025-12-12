@@ -194,6 +194,216 @@ const AboutPage = () => {
             </div>
           </div>
         </section>
+        <section
+          id="kontakt"
+          style={{
+            backgroundColor: "#99E5F8",
+            padding: "1rem",
+            color: "#2F4335",
+            borderRadius: "8px",
+            border: "1px solid white",
+          }}
+          className="about-section"
+        >
+          <div
+            style={{
+              display: "flex",
+
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "16px",
+            }}
+          >
+            <h2
+              className="about-heading"
+              style={{ color: "#2F4335", marginTop: 0 }}
+            >
+              <p>Kontakt</p>
+            </h2>
+          </div>
+
+          <p
+            className="about-text"
+            style={{
+              color: "#2F4335",
+              marginBottom: "24px",
+              textAlign: "center",
+            }}
+          >
+            Hvis du har spørsmål eller tilbakemeldinger, ta kontakt med oss
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "24px",
+              margin: "16px",
+              color: "#2F4335",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: "32px",
+                width: "100%",
+                maxWidth: "800px",
+              }}
+            >
+              {/* Joana */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
+                <img
+                  src="/team-images/Joana.webp"
+                  alt="Joana"
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "12px",
+                    objectFit: "cover",
+                    border: "1.5px solid white",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+                <div
+                  style={{
+                    color: "#2F4335",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                  }}
+                >
+                  Joana
+                </div>
+                <a
+                  href="mailto:joana@comte.no"
+                  style={{
+                    color: "#2F4335",
+                    textDecoration: "none",
+                    fontWeight: 500,
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.textDecoration = "underline";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.textDecoration = "none";
+                  }}
+                >
+                  joana@comte.no
+                </a>
+              </div>
+
+              {/* Herman */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
+                <img
+                  src="/team-images/Herman.webp"
+                  alt="Herman"
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "12px",
+                    objectFit: "cover",
+                    border: "1.5px solid white",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+                <div
+                  style={{
+                    color: "#2F4335",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                  }}
+                >
+                  Herman
+                </div>
+                <a
+                  href="mailto:herman@comte.no"
+                  style={{
+                    color: "#2F4335",
+                    textDecoration: "none",
+                    fontWeight: 500,
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.textDecoration = "underline";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.textDecoration = "none";
+                  }}
+                >
+                  herman@comte.no
+                </a>
+              </div>
+
+              {/* Bjørn */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
+                <img
+                  src="/team-images/Bjørn.webp"
+                  alt="Bjørn"
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "12px",
+                    objectFit: "cover",
+                    border: "1.5px solid white",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+                <div
+                  style={{
+                    color: "#2F4335",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                  }}
+                >
+                  Bjørn
+                </div>
+                <a
+                  href="mailto:bjorn@comte.no"
+                  style={{
+                    color: "#2F4335",
+                    textDecoration: "none",
+                    fontWeight: 500,
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.textDecoration = "underline";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.textDecoration = "none";
+                  }}
+                >
+                  bjorn@comte.no
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

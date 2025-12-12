@@ -72,7 +72,9 @@ export const ResourcesDropdown = ({
     // Create a temporary anchor element to trigger download
     const link = document.createElement("a");
     link.href = `/pdfs/${filename}`;
-    link.download = filename;
+    // Extract just the filename without the directory path
+    const downloadFilename = filename.split("/").pop() || filename;
+    link.download = downloadFilename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
