@@ -72,7 +72,7 @@ function App() {
             Presentasjoner
           </button>
 
-          <button
+          {/* <button
             ref={podcastsButtonRef}
             onClick={() => {
               setIsPodcastsDropdownOpen(!isPodcastsDropdownOpen);
@@ -88,7 +88,7 @@ function App() {
             }}
           >
             Podcaster
-          </button>
+          </button> */}
         </nav>
       </header>
 

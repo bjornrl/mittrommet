@@ -98,10 +98,101 @@ export default function LandingPage() {
           Nye Rogaland teater og Stavanger Museum
         </h2>
       </MaskEffect>
-      {/* <div>
-        <p>aåweodiuabnf oinfasåof nszgnf s </p>
-        <p>aidjbawodnbaodb</p>
-      </div> */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: "blue",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "#ef4444",
+            color: "white",
+            width: "25%",
+            height: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+            flexDirection: "column",
+            border: "1px solid white",
+
+            paddingLeft: "10px",
+            paddingRight: "10px",
+          }}
+        >
+          <p>
+            Dette er jo allerede landingssiden. Denne knappen kan du trykke på
+            så mye du vil uten at noe skjer.
+          </p>
+        </div>
+        <div
+          style={{
+            backgroundColor: "#ef4444",
+            color: "white",
+            width: "25%",
+            height: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+            flexDirection: "column",
+            border: "1px solid white",
+
+            paddingLeft: "10px",
+            paddingRight: "10px",
+          }}
+        >
+          <p>
+            Her kan du lese om prosessen som har ført til MITTROMMET og hvordan
+            det skal utformes framover.
+          </p>
+        </div>
+        <div
+          style={{
+            backgroundColor: "#ef4444",
+            color: "white",
+            width: "25%",
+            height: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+            flexDirection: "column",
+            border: "1px solid white",
+
+            paddingLeft: "10px",
+            paddingRight: "10px",
+          }}
+        >
+          <p>
+            Her finner du samlingen med ideer til tjeneester, arrangementer og
+            fasiliteter som vil utgjøre MITTROMMET nå, under konstruksjon og når
+            det er bygget ferdig.
+          </p>
+        </div>
+        <div
+          style={{
+            backgroundColor: "#ef4444",
+            color: "white",
+            width: "25%",
+            height: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+            flexDirection: "column",
+            border: "1px solid white",
+
+            paddingLeft: "10px",
+            paddingRight: "10px",
+          }}
+        >
+          <p>
+            Her kan du laste ned presentasjoner om de ulike delene av
+            MITTROMMET-konseptet
+          </p>
+        </div>
+      </div>
     </main>
   );
 }
