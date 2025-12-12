@@ -117,7 +117,7 @@ function App() {
           },
         ]}
       />
-      <ResourcesDropdown
+      {/* <ResourcesDropdown
         isOpen={isPodcastsDropdownOpen}
         onClose={() => setIsPodcastsDropdownOpen(false)}
         buttonRef={podcastsButtonRef}
@@ -135,7 +135,7 @@ function App() {
             type: "podcast",
           },
         ]}
-      />
+      /> */}
     </div>
   );
 }

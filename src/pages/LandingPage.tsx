@@ -1,7 +1,18 @@
+import { useState, useEffect } from "react";
 import { MaskEffect } from "@/components/MaskEffect";
 // import { ArrowDownIcon } from "lucide-react";
 
 export default function LandingPage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   return (
     <main
       style={{
@@ -19,7 +30,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center justify-center">
             <h1
               style={{
-                fontSize: "6rem",
+                fontSize: isMobile ? "3rem" : "6rem",
                 fontWeight: 700,
                 margin: 0,
                 padding: 0,
@@ -49,13 +60,18 @@ export default function LandingPage() {
                   justifyContent: "center",
                 }}
               >
-                Denne siden består av en idébank og presentasjoner, samt
+                Denne siden er en presentasjon av MITTROMMET. Den inneholder en
+                idébank og presentasjoner, laget av Comte Bureau og Canoe for
+                Stavanger Kommune. <br></br>
+                <br></br>På denne siden kan du lese om prosessen som har ført
+                til MITTROMMET og hvordan det skal utformes framover.
+                {/* Denne siden består av en idébank og presentasjoner, samt
                 KI-genererte podcaster om MITTROMMET. Sammen er de verktøy som
                 skal hjelpe deg og å forstå hvordan vi ønsker å utforme
                 MITTROMMET slik at det enkelt kan leses og forstås. MITTROMMET
                 er den overordnede startegien og føringene for hvordan vi skal
                 sørge for at sammenslåingen av Rogaland Teater og Stavanger
-                Museum blir en suksess.
+                Museum blir en suksess. */}
                 {/* Sambruk, samhandling og samskaping av nytt bygg for Rogaland
               Teater og Stavanger Museum. */}
               </p>
@@ -100,11 +116,10 @@ export default function LandingPage() {
       </MaskEffect>
       <div
         style={{
-          display: "flex",
+          display: isMobile ? "none" : "flex",
           flexDirection: "row",
           backgroundColor: "blue",
           width: "100%",
-          height: "100%",
         }}
       >
         <div
@@ -112,8 +127,8 @@ export default function LandingPage() {
             backgroundColor: "#ef4444",
             color: "white",
             width: "25%",
-            height: "100px",
             display: "flex",
+
             alignItems: "center",
             justifyContent: "start",
             flexDirection: "column",
@@ -133,7 +148,6 @@ export default function LandingPage() {
             backgroundColor: "#ef4444",
             color: "white",
             width: "25%",
-            height: "100px",
             display: "flex",
             alignItems: "center",
             justifyContent: "start",
@@ -154,7 +168,6 @@ export default function LandingPage() {
             backgroundColor: "#ef4444",
             color: "white",
             width: "25%",
-            height: "100px",
             display: "flex",
             alignItems: "center",
             justifyContent: "start",
@@ -176,7 +189,6 @@ export default function LandingPage() {
             backgroundColor: "#ef4444",
             color: "white",
             width: "25%",
-            height: "100px",
             display: "flex",
             alignItems: "center",
             justifyContent: "start",

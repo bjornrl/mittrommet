@@ -107,6 +107,27 @@ body {
   border-right: none;
 }
 
+/* Mobile: 2x2 grid layout */
+@media (max-width: 640px) {
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nav-link {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-link:nth-child(2n) {
+    border-right: none;
+  }
+
+  .nav-link:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+}
+
 .nav-link button {
   width: 100%;
   height: 100%;

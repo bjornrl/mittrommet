@@ -99,6 +99,103 @@ const AboutPage = () => {
             }}
           />
         </div>
+        <section
+          style={{
+            backgroundColor: "#ef4444",
+            padding: "1rem",
+            color: "white",
+            borderRadius: "8px",
+            border: "1px solid white",
+          }}
+          className="about-section"
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
+            <h2 className="about-heading" style={{ color: "white", margin: 0 }}>
+              Podcaster
+            </h2>
+          </div>
+          <p className="about-text" style={{ color: "white" }}>
+            Vi har KI-generert to podcaster, basert på presentasjonene om
+            MITTROMMET. De kan du høre eller laste ned her!
+          </p>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "24px",
+              marginTop: "16px",
+            }}
+          >
+            <div style={{ width: "100%", maxWidth: 480 }}>
+              <h3 style={{ marginBottom: 8, fontWeight: 600 }}>
+                Podcast 1: Hva er Mittrommet?
+              </h3>
+              <audio controls style={{ width: "100%" }}>
+                <source src="/podcasts/podcast-1.mp3" type="audio/mpeg" />
+                Nettleseren din støtter ikke lydavspilling.
+              </audio>
+              <div
+                style={{
+                  marginTop: 6,
+                  backgroundColor: "white",
+                  width: "fit-content",
+                  padding: "1rem",
+                  borderRadius: "100px",
+                }}
+              >
+                <a
+                  href="/podcasts/podcast-1.mp3"
+                  download
+                  style={{
+                    color: "#2563eb",
+                    textDecoration: "underline",
+                    fontSize: "0.98rem",
+                  }}
+                >
+                  Last ned Podcast 1
+                </a>
+              </div>
+            </div>
+            <div style={{ width: "100%", maxWidth: 480 }}>
+              <h3 style={{ marginBottom: 8, fontWeight: 600 }}>
+                Podcast 2: Tjenestekonsepter
+              </h3>
+              <audio controls style={{ width: "100%" }}>
+                <source src="/podcasts/podcast-2.mp3" type="audio/mpeg" />
+                Nettleseren din støtter ikke lydavspilling.
+              </audio>
+              <div
+                style={{
+                  marginTop: 6,
+                  backgroundColor: "white",
+                  width: "fit-content",
+                  padding: "1rem",
+                  borderRadius: "100px",
+                }}
+              >
+                <a
+                  href="/podcasts/podcast-2.mp3"
+                  download
+                  style={{
+                    color: "#2563eb",
+                    textDecoration: "underline",
+                    fontSize: "0.98rem",
+                  }}
+                >
+                  Last ned Podcast 2
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
