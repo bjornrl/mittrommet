@@ -102,18 +102,21 @@ function App() {
             name: "Det tredje rommet",
             filename: "tronds-presentasjon.pdf",
             type: "pdf",
+            iframeUrl: "https://heyzine.com/flip-book/c7288b6207.html",
           },
           {
             id: 2,
             name: "Tjenestekonsepter",
             filename: "joana-presentasjon.pdf",
             type: "pdf",
+            iframeUrl: "https://heyzine.com/flip-book/c7288b6207.html",
           },
           {
             id: 3,
             name: "Organisasjon",
             filename: "joana-presentasjon.pdf",
             type: "pdf",
+            iframeUrl: "https://heyzine.com/flip-book/c7288b6207.html",
           },
         ]}
       />

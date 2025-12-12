@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { ResourceModal } from "./ResourceModal";
 
 interface Resource {
   id: number;
   name: string;
   filename: string;
   type?: "pdf" | "podcast";
+  iframeUrl?: string;
 }
 
 interface ResourcesDropdownProps {
@@ -53,6 +55,9 @@ export const ResourcesDropdown = ({
 }: ResourcesDropdownProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [openModalResourceId, setOpenModalResourceId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const checkMobile = () => {
@@ -235,34 +240,74 @@ export const ResourcesDropdown = ({
                     {resource.name}
                   </span>
                 </div>
-                <button
-                  onClick={() => handleDownload(resource.filename)}
+                <div
                   style={{
-                    padding: "0.375rem 0.75rem",
-                    backgroundColor: "#e9504c",
-                    color: "#ffffff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "0.75rem",
-                    fontWeight: 500,
-                    transition: "background-color 0.2s",
+                    display: "flex",
+                    gap: "0.5rem",
                     flexShrink: 0,
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#c43e3a";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#e9504c";
-                  }}
                 >
-                  Last ned
-                </button>
+                  {resource.iframeUrl && (
+                    <button
+                      onClick={() => setOpenModalResourceId(resource.id)}
+                      style={{
+                        padding: "0.375rem 0.75rem",
+                        backgroundColor: "#e9504c",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "0.75rem",
+                        fontWeight: 500,
+                        transition: "background-color 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#c43e3a";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "#e9504c";
+                      }}
+                    >
+                      Les
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDownload(resource.filename)}
+                    style={{
+                      padding: "0.375rem 0.75rem",
+                      backgroundColor: "#e9504c",
+                      color: "#ffffff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "0.75rem",
+                      fontWeight: 500,
+                      transition: "background-color 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#c43e3a";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#e9504c";
+                    }}
+                  >
+                    Last ned
+                  </button>
+                </div>
               </div>
             );
           })}
         </div>
       </div>
+      {openModalResourceId !== null && (
+        <ResourceModal
+          isOpen={true}
+          onClose={() => setOpenModalResourceId(null)}
+          iframeUrl={
+            resources.find((r) => r.id === openModalResourceId)?.iframeUrl || ""
+          }
+        />
+      )}
     </>
   );
 };
