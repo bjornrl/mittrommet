@@ -11,6 +11,7 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
   const [maskId] = useState(
     () => `mask-${Math.random().toString(36).substr(2, 9)}`
   );
@@ -48,7 +49,7 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
   const springY = useSpring(mouseY, { stiffness: 1000, damping: 30 });
   const springSize = useSpring(maskSize, { stiffness: 500, damping: 50 });
 
-  // Detect mobile/touch device
+  // Detect mobile/touch device and Safari
   useEffect(() => {
     const checkMobile = () => {
       const isTouchDevice =
@@ -56,6 +57,14 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       const isSmallScreen = window.innerWidth <= 768;
       setIsMobile(isTouchDevice || isSmallScreen);
     };
+
+    // Detect Safari
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isSafariBrowser =
+      /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
+      (userAgent.includes("safari") && !userAgent.includes("chrome"));
+
+    setIsSafari(isSafariBrowser);
 
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -166,6 +175,72 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
     };
   }, [springX, springY]);
 
+  // Initialize SVG dimensions immediately for Safari compatibility
+  useEffect(() => {
+    const initSVG = () => {
+      if (svgRef.current && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const width = rect.width || window.innerWidth || 1920;
+        const height = rect.height || window.innerHeight || 1080;
+
+        svgRef.current.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        svgRef.current.setAttribute("width", width.toString());
+        svgRef.current.setAttribute("height", height.toString());
+
+        // Force Safari to recognize the mask by setting style attributes
+        svgRef.current.style.width = `${width}px`;
+        svgRef.current.style.height = `${height}px`;
+      }
+    };
+
+    // Try multiple times to ensure it's set
+    initSVG();
+    requestAnimationFrame(initSVG);
+    setTimeout(initSVG, 0);
+    setTimeout(initSVG, 100);
+  }, []);
+
+  // Apply mask styles directly to DOM (Safari gets a CSS radial mask fallback)
+  useEffect(() => {
+    if (!maskedLayerRef.current) return;
+
+    const element = maskedLayerRef.current;
+    if (isSafari) {
+      const gradientMask =
+        "radial-gradient(circle var(--mask-radius) at var(--mask-x) var(--mask-y), rgba(255,255,255,1) 0%, rgba(255,255,255,1) 98%, rgba(255,255,255,0) 100%)";
+
+      // Default values so the mask is valid on first paint
+      const initialSize = maskSize.get();
+      const radius = initialSize / 2;
+      const initialX = springX.get() || 0;
+      const initialY = springY.get() || 0;
+      element.style.setProperty("--mask-x", `${initialX}px`);
+      element.style.setProperty("--mask-y", `${initialY}px`);
+      element.style.setProperty("--mask-radius", `${radius}px`);
+
+      element.style.setProperty("-webkit-mask-image", gradientMask);
+      element.style.setProperty("mask-image", gradientMask);
+      element.style.setProperty("-webkit-mask-repeat", "no-repeat");
+      element.style.setProperty("mask-repeat", "no-repeat");
+      element.style.setProperty("-webkit-mask-size", "100% 100%");
+      element.style.setProperty("mask-size", "100% 100%");
+      element.style.setProperty("-webkit-mask-position", "0 0");
+      element.style.setProperty("mask-position", "0 0");
+    } else {
+      const maskUrl = `url(#${maskId})`;
+
+      // Apply mask styles directly via DOM
+      element.style.setProperty("-webkit-mask-image", maskUrl);
+      element.style.setProperty("mask-image", maskUrl);
+      element.style.setProperty("-webkit-mask-size", "100%");
+      element.style.setProperty("mask-size", "100%");
+      element.style.setProperty("-webkit-mask-position", "0 0");
+      element.style.setProperty("mask-position", "0 0");
+      element.style.setProperty("-webkit-mask-repeat", "no-repeat");
+      element.style.setProperty("mask-repeat", "no-repeat");
+    }
+  }, [maskId, isSafari, maskSize, springX, springY]);
+
   // Update SVG circle in mask and viewBox, and visible circle
   useEffect(() => {
     const updateCircle = () => {
@@ -183,10 +258,22 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         svgRef.current.setAttribute("width", rect.width.toString());
         svgRef.current.setAttribute("height", rect.height.toString());
 
+        // Also set via style for Safari
+        svgRef.current.style.width = `${rect.width}px`;
+        svgRef.current.style.height = `${rect.height}px`;
+
         // Update mask circle position and size
         circleRef.current.setAttribute("cx", x.toString());
         circleRef.current.setAttribute("cy", y.toString());
         circleRef.current.setAttribute("r", (size / 2).toString());
+
+        // Keep CSS variables in sync for Safari CSS mask fallback
+        if (maskedLayerRef.current) {
+          const radius = size / 2;
+          maskedLayerRef.current.style.setProperty("--mask-x", `${x}px`);
+          maskedLayerRef.current.style.setProperty("--mask-y", `${y}px`);
+          maskedLayerRef.current.style.setProperty("--mask-radius", `${radius}px`);
+        }
 
         // Update visible circle position and size
         if (visibleCircleRef.current) {
@@ -228,18 +315,25 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
         backgroundColor: "#ef4444",
       }}
     >
-      {/* SVG mask definition */}
+      {/* SVG mask definition - Safari compatible (must be visible) */}
       <svg
         ref={svgRef}
         style={{
           position: "absolute",
           pointerEvents: "none",
-          width: 0,
-          height: 0,
+          width: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
         }}
+        aria-hidden="true"
       >
         <defs>
-          <mask id={maskId}>
+          <mask
+            id={maskId}
+            maskUnits="userSpaceOnUse"
+            maskContentUnits="userSpaceOnUse"
+          >
             {/* Black background - hides the element (MITTROMMET) - shows background text */}
             <rect width="100%" height="100%" fill="black" />
             {/* White circle - shows the element (MITTROMMET) - reveals it */}
@@ -280,21 +374,40 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
       {/* Foreground layer - MITTROMMET text (masked) */}
       <div
         ref={maskedLayerRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2,
-          // backgroundImage: 'url("/images/abonnement.png")',
-          // backgroundSize: "cover",
-          backgroundColor: "oklch(20.8% 0.042 265.755)",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          maskImage: `url(#${maskId})`,
-          WebkitMaskImage: `url(#${maskId})`,
-        }}
+        style={
+          {
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2,
+            // backgroundImage: 'url("/images/abonnement.png")',
+            // backgroundSize: "cover",
+            backgroundColor: "oklch(20.8% 0.042 265.755)",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            // Mask applied in effect; Safari uses CSS radial mask fallback
+            ...(isSafari
+              ? {
+                  ["--mask-x" as string]: "50%",
+                  ["--mask-y" as string]: "50%",
+                  ["--mask-radius" as string]: "30px",
+                }
+              : {
+                  maskImage: `url(#${maskId})`,
+                  WebkitMaskImage: `url(#${maskId})`,
+                  maskSize: "100%",
+                  WebkitMaskSize: "100%",
+                  maskPosition: "0 0",
+                  WebkitMaskPosition: "0 0",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskOrigin: "border-box",
+                  WebkitMaskOrigin: "border-box",
+                }),
+          } as React.CSSProperties
+        }
       >
         <div
           style={{
@@ -306,6 +419,7 @@ export const MaskEffect = ({ children, revealText }: MaskEffectProps) => {
             alignItems: "center",
             justifyContent: "center",
             touchAction: "manipulation",
+            zIndex: 1,
           }}
         >
           {/* Yellow rectangle - furthest back, slightly bigger */}
