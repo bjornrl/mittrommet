@@ -71,7 +71,7 @@ export const ResourcesDropdown = ({
   const handleDownload = (filename: string) => {
     // Create a temporary anchor element to trigger download
     const link = document.createElement("a");
-    link.href = `/resources/${filename}`;
+    link.href = `/pdfs/${filename}`;
     link.download = filename;
     document.body.appendChild(link);
     link.click();
