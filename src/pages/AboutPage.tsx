@@ -1,5 +1,3 @@
-import { Italic } from "lucide-react";
-
 const Circle = () => {
   return (
     <div
