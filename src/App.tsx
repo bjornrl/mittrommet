@@ -10,9 +10,9 @@ function App() {
   const isProductPage = location.pathname === "/product";
   const isAboutPage = location.pathname === "/about";
   const [isPdfsDropdownOpen, setIsPdfsDropdownOpen] = useState(false);
-  const [isPodcastsDropdownOpen, setIsPodcastsDropdownOpen] = useState(false);
+  // const [isPodcastsDropdownOpen, setIsPodcastsDropdownOpen] = useState(false);
   const pdfsButtonRef = useRef<HTMLButtonElement>(null);
-  const podcastsButtonRef = useRef<HTMLButtonElement>(null);
+  // const podcastsButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div>
