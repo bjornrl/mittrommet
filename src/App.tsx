@@ -58,7 +58,7 @@ function App() {
             ref={pdfsButtonRef}
             onClick={() => {
               setIsPdfsDropdownOpen(!isPdfsDropdownOpen);
-              setIsPodcastsDropdownOpen(false);
+              // setIsPodcastsDropdownOpen(false);
             }}
             className="nav-link"
             style={{
