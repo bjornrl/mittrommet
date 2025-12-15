@@ -5,7 +5,7 @@ interface Resource {
   id: number;
   name: string;
   filename: string;
-  type?: "pdf" | "podcast";
+  type?: "pdf";
   iframeUrl?: string;
 }
 
@@ -172,6 +172,39 @@ export const ResourcesDropdown = ({
           overflowY: "auto",
         }}
       >
+        {isMobile && (
+          <button
+            onClick={onClose}
+            style={{
+              position: "absolute",
+              top: "0.75rem",
+              right: "0.75rem",
+              backgroundColor: "#e9504c",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "4px",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "20px",
+              lineHeight: "1",
+              fontWeight: "bold",
+              zIndex: 2001,
+              transition: "background-color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#c43e3a";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#e9504c";
+            }}
+          >
+            ×
+          </button>
+        )}
         <div
           style={{
             display: "flex",
@@ -181,7 +214,6 @@ export const ResourcesDropdown = ({
         >
           <HowToReadPages />
           {resources.map((resource) => {
-            const isPodcast = resource.type === "podcast";
             return (
               <div
                 key={resource.id}
@@ -209,36 +241,21 @@ export const ResourcesDropdown = ({
                     flex: 1,
                   }}
                 >
-                  {isPodcast ? (
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      style={{ color: "#e9504c", flexShrink: 0 }}
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <polygon points="10 8 16 12 10 16 10 8" />
-                    </svg>
-                  ) : (
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      style={{ color: "#e9504c", flexShrink: 0 }}
-                    >
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="16" y1="13" x2="8" y2="13" />
-                      <line x1="16" y1="17" x2="8" y2="17" />
-                      <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                  )}
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    style={{ color: "#e9504c", flexShrink: 0 }}
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                  </svg>
                   <span
                     style={{
                       fontSize: "0.875rem",

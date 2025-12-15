@@ -7,7 +7,7 @@ type Phase = "Nåtid" | "Mellomtid" | "Nytid";
 type Season = "Vår" | "Sommer" | "Høst" | "Vinter";
 type DayType = "Ukedager" | "Helg";
 type TimeType = "Dag" | "Kveld/natt";
-type ConceptType = "Tjeneste" | "Fasilietet" | "Arrangement";
+type ConceptType = "Tjeneste" | "Fasilitet" | "Arrangement";
 
 interface Concept {
   id: number;
@@ -32,7 +32,7 @@ const phases: Phase[] = ["Nåtid", "Mellomtid", "Nytid"];
 const seasons: Season[] = ["Vår", "Sommer", "Høst", "Vinter"];
 const days: DayType[] = ["Ukedager", "Helg"];
 const times: TimeType[] = ["Dag", "Kveld/natt"];
-const conceptTypes: ConceptType[] = ["Tjeneste", "Fasilietet", "Arrangement"];
+const conceptTypes: ConceptType[] = ["Tjeneste", "Fasilitet", "Arrangement"];
 
 // Initial concepts loaded from CSV template
 // This will be populated from the CSV file
@@ -590,7 +590,7 @@ const ConceptCard = ({
     switch (type) {
       case "Tjeneste":
         return "type-tag-blue";
-      case "Fasilietet":
+      case "fasilitet":
         return "type-tag-red";
       case "Arrangement":
         return "type-tag-yellow";

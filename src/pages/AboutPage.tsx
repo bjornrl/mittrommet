@@ -277,7 +277,7 @@ const AboutPage = () => {
                     fontSize: "0.98rem",
                   }}
                 >
-                  Last ned Podcast 1
+                  Last ned
                 </a>
               </div>
             </div>
