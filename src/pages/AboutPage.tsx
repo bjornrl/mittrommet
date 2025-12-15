@@ -20,6 +20,7 @@ interface ContactCardProps {
   imageWidth?: string;
   imageHeight?: string;
   backgroundColor?: string;
+  buttonColor?: string;
 }
 
 const ContactCard = ({
@@ -29,6 +30,7 @@ const ContactCard = ({
   imageWidth = "15rem",
   imageHeight = "10rem",
   backgroundColor = "white",
+  buttonColor = "white",
 }: ContactCardProps) => {
   return (
     <div
@@ -68,6 +70,10 @@ const ContactCard = ({
             textDecoration: "none",
             fontWeight: 500,
             fontSize: "0.95rem",
+            padding: "0.5rem",
+            borderRadius: "full",
+            backgroundColor: buttonColor,
+            // border: "1px solid white",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.textDecoration = "underline";
@@ -341,18 +347,21 @@ const AboutPage = () => {
                 email="joana@comte.no"
                 imageSrc="/team-images/Joana.webp"
                 backgroundColor="#FEE05F"
+                buttonColor="#E9504C"
               />
               <ContactCard
                 name="Herman"
                 email="herman@comte.no"
                 imageSrc="/team-images/Herman.webp"
                 backgroundColor="#F5B3C4"
+                buttonColor="#A7D8F7"
               />
               <ContactCard
                 name="Bjørn"
                 email="bjorn@comte.no"
                 imageSrc="/team-images/Bjørn.webp"
                 backgroundColor="#E9504C"
+                buttonColor="#FEE05F"
               />
             </div>
           </div>
