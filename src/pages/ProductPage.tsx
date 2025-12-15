@@ -590,7 +590,7 @@ const ConceptCard = ({
     switch (type) {
       case "Tjeneste":
         return "type-tag-blue";
-      case "fasilitet":
+      case "Fasilitet":
         return "type-tag-red";
       case "Arrangement":
         return "type-tag-yellow";
