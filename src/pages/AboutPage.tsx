@@ -13,6 +13,89 @@ const Circle = () => {
   );
 };
 
+interface ContactCardProps {
+  name: string;
+  email: string;
+  imageSrc: string;
+  imageWidth?: string;
+  imageHeight?: string;
+  backgroundColor?: string;
+}
+
+const ContactCard = ({
+  name,
+  email,
+  imageSrc,
+  imageWidth = "15rem",
+  imageHeight = "10rem",
+  backgroundColor = "white",
+}: ContactCardProps) => {
+  return (
+    <div
+      style={{
+        backgroundColor: backgroundColor,
+        borderRadius: "12px",
+        padding: "16px",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: "16px",
+        width: "100%",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: "8px",
+          flex: 1,
+        }}
+      >
+        <div
+          style={{
+            color: "#2F4335",
+            fontWeight: 600,
+            fontSize: "3rem",
+          }}
+        >
+          {name}
+        </div>
+        <a
+          href={`mailto:${email}`}
+          style={{
+            color: "#2F4335",
+            textDecoration: "none",
+            fontWeight: 500,
+            fontSize: "0.95rem",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.textDecoration = "underline";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.textDecoration = "none";
+          }}
+        >
+          {email}
+        </a>
+      </div>
+      <img
+        src={imageSrc}
+        alt={name}
+        style={{
+          width: imageWidth,
+          height: imageHeight,
+          borderRadius: "12px",
+          objectFit: "cover",
+          // border: "1.5px solid white",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          flexShrink: 0,
+        }}
+      />
+    </div>
+  );
+};
+
 const AboutPage = () => {
   return (
     <main
@@ -201,7 +284,7 @@ const AboutPage = () => {
             padding: "1rem",
             color: "#2F4335",
             borderRadius: "8px",
-            border: "1px solid white",
+            // border: "1px solid white",
           }}
           className="about-section"
         >
@@ -209,30 +292,29 @@ const AboutPage = () => {
             style={{
               display: "flex",
 
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: "column",
+              alignItems: "start",
               gap: "8px",
               marginBottom: "16px",
             }}
           >
             <h2
               className="about-heading"
-              style={{ color: "#2F4335", marginTop: 0 }}
+              style={{ color: "#2F4335", marginTop: 0, fontSize: "3rem" }}
             >
-              <p>Kontakt</p>
+              Kontakt
             </h2>
+            <p
+              className="about-text"
+              style={{
+                color: "#2F4335",
+                marginBottom: "24px",
+                textAlign: "center",
+              }}
+            >
+              Hvis du har spørsmål eller tilbakemeldinger, ta kontakt med oss
+            </p>
           </div>
-
-          <p
-            className="about-text"
-            style={{
-              color: "#2F4335",
-              marginBottom: "24px",
-              textAlign: "center",
-            }}
-          >
-            Hvis du har spørsmål eller tilbakemeldinger, ta kontakt med oss
-          </p>
 
           <div
             style={{
@@ -247,160 +329,31 @@ const AboutPage = () => {
             <div
               style={{
                 display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                gap: "32px",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "2px",
                 width: "100%",
                 maxWidth: "800px",
               }}
             >
-              {/* Joana */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
-              >
-                <img
-                  src="/team-images/Joana.webp"
-                  alt="Joana"
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "12px",
-                    objectFit: "cover",
-                    border: "1.5px solid white",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  }}
-                />
-                <div
-                  style={{
-                    color: "#2F4335",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                  }}
-                >
-                  Joana
-                </div>
-                <a
-                  href="mailto:joana@comte.no"
-                  style={{
-                    color: "#2F4335",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    fontSize: "0.95rem",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.textDecoration = "underline";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.textDecoration = "none";
-                  }}
-                >
-                  joana@comte.no
-                </a>
-              </div>
-
-              {/* Herman */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
-              >
-                <img
-                  src="/team-images/Herman.webp"
-                  alt="Herman"
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "12px",
-                    objectFit: "cover",
-                    border: "1.5px solid white",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  }}
-                />
-                <div
-                  style={{
-                    color: "#2F4335",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                  }}
-                >
-                  Herman
-                </div>
-                <a
-                  href="mailto:herman@comte.no"
-                  style={{
-                    color: "#2F4335",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    fontSize: "0.95rem",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.textDecoration = "underline";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.textDecoration = "none";
-                  }}
-                >
-                  herman@comte.no
-                </a>
-              </div>
-
-              {/* Bjørn */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
-              >
-                <img
-                  src="/team-images/Bjørn.webp"
-                  alt="Bjørn"
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "12px",
-                    objectFit: "cover",
-                    border: "1.5px solid white",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  }}
-                />
-                <div
-                  style={{
-                    color: "#2F4335",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                  }}
-                >
-                  Bjørn
-                </div>
-                <a
-                  href="mailto:bjorn@comte.no"
-                  style={{
-                    color: "#2F4335",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    fontSize: "0.95rem",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.textDecoration = "underline";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.textDecoration = "none";
-                  }}
-                >
-                  bjorn@comte.no
-                </a>
-              </div>
+              <ContactCard
+                name="Joana"
+                email="joana@comte.no"
+                imageSrc="/team-images/Joana.webp"
+                backgroundColor="#FEE05F"
+              />
+              <ContactCard
+                name="Herman"
+                email="herman@comte.no"
+                imageSrc="/team-images/Herman.webp"
+                backgroundColor="#F5B3C4"
+              />
+              <ContactCard
+                name="Bjørn"
+                email="bjorn@comte.no"
+                imageSrc="/team-images/Bjørn.webp"
+                backgroundColor="#E9504C"
+              />
             </div>
           </div>
         </section>
