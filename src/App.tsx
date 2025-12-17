@@ -102,28 +102,28 @@ function App() {
             name: "Superdokument",
             filename: "dokumenter/Nye-RT&SM-Superdocument.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/d450b8b0c7.html",
+            iframeUrl: "https://heyzine.com/flip-book/9b3a647723.html",
           },
           {
             id: 2,
             name: "Det tredje rommet",
-            filename: "dokumenter/Nye-RT&SM-Third-Room.pdf",
+            filename: "dokumenter/Nye-RT&SM-Third Room.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/7caf07faf0.html",
+            iframeUrl: "https://heyzine.com/flip-book/48447d299c.html",
           },
           {
             id: 3,
             name: "Tjenestekonsepter",
             filename: "dokumenter/Nye-RT&SM-Services.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/f3c66cc857.html",
+            iframeUrl: "https://heyzine.com/flip-book/4ddee7e715.html",
           },
           {
             id: 4,
             name: "Organisasjon",
             filename: "dokumenter/Nye-RT&SM-Organisation.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/c7288b6207.html",
+            iframeUrl: "https://heyzine.com/flip-book/2d47862686.html",
           },
         ]}
       />

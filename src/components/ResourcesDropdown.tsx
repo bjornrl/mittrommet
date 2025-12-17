@@ -69,15 +69,9 @@ export const ResourcesDropdown = ({
   }, []);
 
   const handleDownload = (filename: string) => {
-    // Create a temporary anchor element to trigger download
-    const link = document.createElement("a");
-    link.href = `/pdfs/${filename}`;
-    // Extract just the filename without the directory path
-    const downloadFilename = filename.split("/").pop() || filename;
-    link.download = downloadFilename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Open PDF in a new tab so users can view and download it
+    const pdfUrl = `/pdfs/${filename}`;
+    window.open(pdfUrl, "_blank");
   };
 
   // Close modal when dropdown closes
@@ -168,7 +162,7 @@ export const ResourcesDropdown = ({
           boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.15)",
           zIndex: 2000,
           minWidth: "250px",
-          maxHeight: "700px",
+          maxHeight: "75vh",
           overflowY: "auto",
         }}
       >
