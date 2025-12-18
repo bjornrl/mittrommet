@@ -13,94 +13,94 @@ const Circle = () => {
   );
 };
 
-interface ContactCardProps {
-  name: string;
-  email: string;
-  imageSrc: string;
-  imageWidth?: string;
-  imageHeight?: string;
-  backgroundColor?: string;
-  buttonColor?: string;
-}
+// interface ContactCardProps {
+//   name: string;
+//   email: string;
+//   imageSrc: string;
+//   imageWidth?: string;
+//   imageHeight?: string;
+//   backgroundColor?: string;
+//   buttonColor?: string;
+// }
 
-const ContactCard = ({
-  name,
-  email,
-  imageSrc,
-  imageWidth = "15rem",
-  imageHeight = "10rem",
-  backgroundColor = "white",
-  buttonColor = "white",
-}: ContactCardProps) => {
-  return (
-    <div
-      style={{
-        backgroundColor: backgroundColor,
-        borderRadius: "12px",
-        padding: "16px",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: "16px",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          gap: "8px",
-          flex: 1,
-        }}
-      >
-        <div
-          style={{
-            color: "#2F4335",
-            fontWeight: 600,
-            fontSize: "3rem",
-          }}
-        >
-          {name}
-        </div>
-        <a
-          href={`mailto:${email}`}
-          style={{
-            color: "#2F4335",
-            textDecoration: "none",
-            fontWeight: 500,
-            fontSize: "0.95rem",
-            padding: "0.5rem",
-            borderRadius: "full",
-            backgroundColor: buttonColor,
-            // border: "1px solid white",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.textDecoration = "underline";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.textDecoration = "none";
-          }}
-        >
-          {email}
-        </a>
-      </div>
-      <img
-        src={imageSrc}
-        alt={name}
-        style={{
-          width: imageWidth,
-          height: imageHeight,
-          borderRadius: "12px",
-          objectFit: "cover",
-          // border: "1.5px solid white",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          flexShrink: 0,
-        }}
-      />
-    </div>
-  );
-};
+// const ContactCard = ({
+//   name,
+//   email,
+//   imageSrc,
+//   imageWidth = "15rem",
+//   imageHeight = "10rem",
+//   backgroundColor = "white",
+//   buttonColor = "white",
+// }: ContactCardProps) => {
+//   return (
+//     <div
+//       style={{
+//         backgroundColor: backgroundColor,
+//         borderRadius: "12px",
+//         padding: "16px",
+//         display: "flex",
+//         flexDirection: "row",
+//         alignItems: "center",
+//         gap: "16px",
+//         width: "100%",
+//       }}
+//     >
+//       <div
+//         style={{
+//           display: "flex",
+//           flexDirection: "column",
+//           alignItems: "flex-start",
+//           gap: "8px",
+//           flex: 1,
+//         }}
+//       >
+//         <div
+//           style={{
+//             color: "#2F4335",
+//             fontWeight: 600,
+//             fontSize: "3rem",
+//           }}
+//         >
+//           {name}
+//         </div>
+//         <a
+//           href={`mailto:${email}`}
+//           style={{
+//             color: "#2F4335",
+//             textDecoration: "none",
+//             fontWeight: 500,
+//             fontSize: "0.95rem",
+//             padding: "0.5rem",
+//             borderRadius: "full",
+//             backgroundColor: buttonColor,
+//             // border: "1px solid white",
+//           }}
+//           onMouseEnter={(e) => {
+//             e.currentTarget.style.textDecoration = "underline";
+//           }}
+//           onMouseLeave={(e) => {
+//             e.currentTarget.style.textDecoration = "none";
+//           }}
+//         >
+//           {email}
+//         </a>
+//       </div>
+//       <img
+//         src={imageSrc}
+//         alt={name}
+//         style={{
+//           width: imageWidth,
+//           height: imageHeight,
+//           borderRadius: "12px",
+//           objectFit: "cover",
+//           // border: "1.5px solid white",
+//           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+//           flexShrink: 0,
+//         }}
+//       />
+//     </div>
+//   );
+// };
 
 const AboutPage = () => {
   return (
@@ -283,7 +283,7 @@ const AboutPage = () => {
             </div>
           </div>
         </section>
-        <section
+        {/* <section
           id="kontakt"
           style={{
             backgroundColor: "#99E5F8",
@@ -365,7 +365,7 @@ const AboutPage = () => {
               />
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </main>
   );
