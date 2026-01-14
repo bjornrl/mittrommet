@@ -102,7 +102,7 @@ function App() {
             name: "Superdokument",
             filename: "dokumenter/Nye-RT&SM-Superdocument.pdf",
             type: "pdf",
-            iframeUrl: "https://heyzine.com/flip-book/9b3a647723.html",
+            iframeUrl: "https://heyzine.com/flip-book/43cff322a2.html",
           },
           {
             id: 2,
